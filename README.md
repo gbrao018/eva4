@@ -1,5 +1,6 @@
 #Session5/Assignment5
 Goal: Achieve 99.4% accuracy on test data consistently with less than 10000 parameters and below 15 epochs and with minimum 5 steps
+
 Step#1: (S5_BaseModel.ipynb)
    1. Target
       . Create a base model which is working with in less than 10000 parameters
@@ -12,6 +13,7 @@ Step#1: (S5_BaseModel.ipynb)
       . No overfitting as of now
       . Still there is a scope to improve
       . In the next step we will apply batch normalization to improve the accuracy  
+      
 Step#2: (S5_step2_batchnorm.ipynb)
    1. Target
        . Apply Batch Normalization and observe the model fit and accuracy improvement
@@ -23,6 +25,7 @@ Step#2: (S5_step2_batchnorm.ipynb)
        . This shows overfitting
        . Training accuracy reached 99.43 , but test accuracy has not reached. We need to solve this overfitting issue. 
        Next step we will add regularization/drop out to remove overfitting
+       
 Step#3: (S5_step3_regularization.ipynb)
    1. Target
       . Apply Regularization/dropout to remove the overfitting
@@ -33,6 +36,7 @@ Step#3: (S5_step3_regularization.ipynb)
    3. Analysis
       . Regularization worked and solved the overfitting issue.
       . But still last big kernel exist and Gap layer has not been used yet. We will add gap layer in next step
+      
 Step#4: (S5_step4_MaxPool5_Gaplayer_LastLayer.ipynb)
    1. Target
       . Added gap layer and removed big kernel in the last.
@@ -48,6 +52,7 @@ Step#4: (S5_step4_MaxPool5_Gaplayer_LastLayer.ipynb)
       . Model is NOT overfit and is good.
       . But there exist difference in the traing and test accuracy.Model is good and underfit
       . As MNIST shows some images shows some orientation, we will add orientation 7 degree in the next step.
+      
 Step#5: (S5_9k_noLR_9940.ipynb, S5_step5_final.ipynb)
    1. Target  
       . Image Augmentation - Added 7 degree orientation as some images are oriented
