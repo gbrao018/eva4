@@ -1,4 +1,6 @@
-Assignment:
+#Resnet18
+
+Assignment#8:
 
 Refer Assignment7, we used depthwise separable convolutions, dilated convolution with 3.5 lac params and achived 78% accuracy.
 
