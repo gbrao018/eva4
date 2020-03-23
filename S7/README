@@ -1,0 +1,12 @@
+#Depthwise and Point wise convolution
+
+Assignment7 :Run this network (https://colab.research.google.com/drive/1qlewMtxcAJT6fIJdmMh8pSf2e-dh51Rw).
+Fix the network above: Change the code such that it uses GPU change the architecture to C1C2C3C40 (basically 3 MPs) total RF must be more than 44 one of the layers must use Depthwise Separable Convolution one of the layers must use Dilated Convolution use GAP (compulsory):- add FC after GAP to target #of classes (optional) achieve 80% accuracy, as many epochs as you want. Total Params to be less than 1M.
+
+Solution Tried:
+
+Fixed the network, with 3.5 lac params. With RF 48, L1-MP->L2->MP->L3->MP->GAP-0. Except Gap and after, Every layer used Depthwise and Point wise convolution.
+First level run tried for 100 epocs without Regularization and with learning rate=0.01. 
+But Training accuracy started increasing and at one level test accuracy came down. Test accuracy did not move beyond 70%.
+Applied BatchNormalization. dropout to 0.1 and 0.2 still could not see much difference.
+Reduced the learning rate to 0.001. And did some data transformation with RandomCrop. Ran for 150 epochs, Could able to reach till 78%.

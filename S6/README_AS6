@@ -1,0 +1,10 @@
+#Regularization, L1, L2
+
+#Session6/Assignment6 Goal:
+
+Take Assignment5 code
+Run model for 40 epochs for each (https://github.com/gbrao018/eva4/blob/session6/S6_Assignment_L1_L2_Regularization.ipynb) . without L1/L2 . with L1 . with L2 . with L1 and L2
+draw 2 graphs to show the validation accuracy change and loss change. This graph must have proper legends and it should be clear what we are looking at. a. https://github.com/gbrao018/eva4/blob/session6/accuracy_loss_changes_images/validation_accuracy_change.png b. https://github.com/gbrao018/eva4/blob/session6/accuracy_loss_changes_images/validation_loss_change.png
+Find any 25 misclassified images for L1 and L2 models. You MUST show the actual and predicted class names. a. Image naming convension ({predcition}_{actual}.png e.g., 5_3.png -> 5 is predicted but actual is 3) b. https://github.com/gbrao018/eva4/tree/session6/misclassified_images/Misclassifies_with_L1_Regularization c. https://github.com/gbrao018/eva4/tree/session6/misclassified_images/Misclassified_with_L2_Regularization d. https://github.com/gbrao018/eva4/tree/session6/misclassified_images/Misclassified_with_L1_L2_Regularization
+Make all the images available on Github Readme page, so you can upload the images for your assignment (you can upload them somewhere else as well for add image url). a. https://github.com/gbrao018/eva4/tree/session6/misclassified_images/Misclassifies_with_L1_Regularization c. https://github.com/gbrao018/eva4/tree/session6/misclassified_images/Misclassified_with_L2_Regularization d. https://github.com/gbrao018/eva4/tree/session6/misclassified_images/Misclassified_with_L1_L2_Regularization e. https://github.com/gbrao018/eva4/blob/session6/accuracy_loss_changes_images/validation_accuracy_change.png f. https://github.com/gbrao018/eva4/blob/session6/accuracy_loss_changes_images/validation_loss_change.png
+Submit the Github link for your notebook with logs, and also upload the images in the S6-Assignment Solution.

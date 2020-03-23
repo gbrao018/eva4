@@ -1,0 +1,9 @@
+Assignment-9
+
+	Used Albumentations for image augmentation with resnet18 model. 
+	Applied Randomcrop, HorizontalFlip Cut out, dropout = 0.1, L1 and L2 with Lambda = 0.0005 We are able to achieve the accuracy of 86.8 but highly over fitted.
+
+	Applied VerticalFlip and Rotate also, that controlled the overfitting, and model became underfitted. We are able to achieve 87.16 test accuracy
+
+	Used GradCam
+	

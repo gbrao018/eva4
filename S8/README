@@ -1,0 +1,16 @@
+#Resnet18
+
+Assignment#8:
+
+Refer Assignment7, we used depthwise separable convolutions, dilated convolution with 3.5 lac params and achived 78% accuracy.
+
+In this Assignment 8, Now we replaced the last model with Resnet18 model and achived 88.2% percent accuracy. 
+
+Used Randomclip and Random horizontal flip in transformation. Initially set LAMBDA =0.00001. In 40 epochs we got 86.9% .
+ 
+later introduced Lr scheduler and LAMDA changed to 0.0001 and in 80 epochs we got 88.2 %. Could not see substantial improvement.
+
+Another thing observed is overfitting. Hopefully , applying dropout can bring down this overfitting.
+
+So observation is that Resnet18 gave higher accuracy, but with higher parameters. 
+Where accuracy is needed, Resnet18 did good. If the compute resources are constraint we can go for inception, depthwise and dilated convolutions.

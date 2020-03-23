@@ -1,0 +1,21 @@
+# Batch Normalization
+
+Assignment-2/Session4 Tril1: 1 lac params, No Batch Normalization
+
+Reduced the params to one lac. Kernel count from 4,8,16,32
+Got the accuracy of 99.38%
+Trial2: Used Batch Normalization
+
+This time reduced the params to 27000
+Used 4,8,16,32 kernel counts
+Used batch normalization .. conv->relu->batchNorm
+Got the accuracy of 99.35%
+
+Trial 3: With Batch Normalization
+
+This time tried with less than 16000
+used kernel counts 8,16,32
+Got 99.35% accuracy
+#Trial4: With Droputs
+
+Accuracy dropped to 98 here. Something went wrong here.
