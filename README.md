@@ -2,6 +2,6 @@
 
 For README of every Assignments , Please refer to Assignments folder
 
-File naming convention: README_AS{NO}. {NO} is the numeric.
+File naming convention: README_S{NO}. {NO} is the numeric.
 
-Example README_AS8 refers to README of Assignment#8
+Example README_S8 refers to README of Assignment#8
