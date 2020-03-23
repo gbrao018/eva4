@@ -34,6 +34,7 @@ class MnistModel:
         self.m_train_acc = []
         self.m_test_acc = []
         self.m_model=copy.deepcopy(model)
+        self.m_loss_fn = F.nll_loss()
         self.m_optimizer=optim.SGD(self.m_model.parameters(), lr, momentum)
         #self.m_optimizer = optim.SGD(m_model.parameters(), lr, momentum)
         self.load_mnist_data(dataloader_args,g_train_set,g_test_set)

@@ -55,7 +55,7 @@ def train_model(model, device, train_loader, loss_fn, optimizer, epoch,train_los
     pbar.set_description(desc= f'Loss={loss.item()} Batch_id={batch_idx} Accuracy={100*correct/processed:0.2f}')
     train_acc.append(100*correct/processed)
 
-def test_model(model, device, test_loader,test_losses,test_acc):
+def test_model(model, device, test_loader, loss_fn, test_losses,test_acc):
     model.eval()
     test_loss = 0
     correct = 0
@@ -87,3 +87,36 @@ def run_model(model, device, doL1 = 0, doL2 = 0, LAMBDA = 0, EPOCHS = 40,start=0
         train_model(model.m_model, device, model.m_train_loader, model.m_optimizer, epoch,model.m_train_losses,model.m_train_acc,doL1,doL2,LAMBDA)
         test_model(model.m_model, device, model.m_test_loader,model.m_test_losses,model.m_test_acc)
 
+import matplotlib.pyplot as plt
+def draw_accuracy_loss_change_graps(model_0,model_l1,model_l2,model_l1_l2):
+    fig, axs = plt.subplots(2,2,figsize=(30,20))
+    #print('train_losses=',len(train_losses))
+    #print('test_losses=',len(test_losses))
+
+    axs[0,0].plot(model_0.m_test_losses,color='black',label='No Regularization')
+    axs[0,0].plot(model_l1.m_test_losses,color='red',label='L1 Regularization')
+    axs[0,0].plot(model_l2.m_test_losses,color='blue',label='L2 Regularization')
+    axs[0,0].plot(model_l1_l2.m_test_losses,color='green',label='Both L1 and L2 Regularization')
+    axs[0,0].set_title("Validation Loss Change")
+    axs[0,0].legend(loc="center")
+
+    axs[0,1].plot(model_0.m_test_acc,color='black',label='No Regularization')
+    axs[0,1].plot(model_l1.m_test_acc,color='red',label='L1 Regularization')
+    axs[0,1].plot(model_l2.m_test_acc,color='blue',label='L2 Regularization')
+    axs[0,1].plot(model_l1_l2.m_test_acc,color='green',label='Both L1 and L2 Regularization')
+    axs[0,1].set_title("Validation Accuracy Change")
+    axs[0,1].legend(loc="center")
+
+    axs[1,0].plot(model_0.m_train_losses,color='black',label='No Regularization')
+    axs[1,0].plot(model_l1.m_train_losses,color='red',label='L1 Regularization')
+    axs[1,0].plot(model_l2.m_train_losses,color='blue',label='L2 Regularization')
+    axs[1,0].plot(model_l1_l2.m_train_losses,color='green',label='Both L1 and L2 Regularization')
+    axs[1,0].set_title("Training Loss Change")
+    axs[1,0].legend(loc="center")
+
+    axs[1,1].plot(model_0.m_train_acc,color='black',label='No Regularization')
+    axs[1,1].plot(model_l1.m_train_acc,color='red',label='L1 Regularization')
+    axs[1,1].plot(model_l2.m_train_acc,color='blue',label='L2 Regularization')
+    axs[1,1].plot(model_l1_l2.m_train_acc,color='green',label='Both L1 and L2 Regularization')
+    axs[1,1].set_title("Training Accuracy Change")
+    axs[1,1].legend(loc="center")
