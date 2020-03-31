@@ -7,7 +7,6 @@ import torch.optim as optim
 import copy
 from torchsummary import summary
 from torchvision import datasets, transforms
-import Model
 import torch.optim as optim
 
 #g_transform = transforms.Compose(
@@ -49,10 +48,12 @@ class CIFARModel10:
         self.m_train_acc = []
         self.m_test_acc = []
         self.m_model=copy.deepcopy(model)
-        #self.m_optimizer=optim.SGD(self.m_model.parameters(), lr, momentum)
+        self.m_optimizer = optim.SGD(self.m_model.parameters(), lr, momentum)
         self.m_criterion = nn.CrossEntropyLoss()
         #self.m_optimizer = optim.Adam(self.m_model.parameters(), lr)
         self.m_optimizer = optim.SGD(self.m_model.parameters(), lr=lr, momentum=0.9, weight_decay=5e-4)
+        #self.adjuster = scheduler.StepLR(self._optimizer, args.epoch_step,gamma=args.gamma)
+        #self.m_scheduler = StepLR(self.m_optimizer, step_size=10, gamma=0.5)                                 
         self.load_cifar_data(g_train_set,g_test_set)
         
     def clone_model(self):
@@ -61,7 +62,7 @@ class CIFARModel10:
     def load_cifar_data(self,train_set,test_set):
         
         self.m_train_loader = torch.utils.data.DataLoader(train_set, batch_size=256,
-                                          shuffle=True, num_workers=2)
+                                          shuffle=True, num_workers=4)
         self.m_test_loader = torch.utils.data.DataLoader(test_set, batch_size=256,
-                                         shuffle=False, num_workers=2)
+                                         shuffle=False, num_workers=4)
                                          

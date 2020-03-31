@@ -38,7 +38,7 @@ class CIFARModel:
         self.m_test_acc = []
         self.m_model=copy.deepcopy(model)
         #self.m_optimizer=optim.SGD(self.m_model.parameters(), lr, momentum)
-        self.m_loss_fn = nn.CrossEntropyLoss()
+        #criterion = nn.CrossEntropyLoss()
         self.m_optimizer = optim.Adam(self.m_model.parameters(), lr)
         self.load_cifar_data(g_train_set,g_test_set)
         
