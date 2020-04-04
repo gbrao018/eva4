@@ -78,7 +78,7 @@ def test_model(model, device, test_loader,test_losses,test_acc,criteria, correct
             pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
             result = pred.eq(target.view_as(pred))
             if last_epoch:
-                #print('last_epoch=',last_epoch)
+                print('last_epoch=',last_epoch)
                 for i in range(len(list(result))):
                     if not list(result)[i] and len(incorrect_samples) < sample_count:
                         incorrect_samples.append({
@@ -101,8 +101,7 @@ def test_model(model, device, test_loader,test_losses,test_acc,criteria, correct
     print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.2f}%)\n'.format(
         test_loss, correct, len(test_loader.dataset), 
         100. * correct / len(test_loader.dataset)))
-    test_acc.append(100. * correct / len(test_loader.dataset)) 
-    return test_loss
+    test_acc.append(100. * correct / len(test_loader.dataset))    
 #Global functions
 def show_summary(model,input_size = (1, 28, 28)):
     summary(model.m_model, input_size)
@@ -124,9 +123,7 @@ def run_model_with_entropy(model, device, criteria = nn.CrossEntropyLoss(), doL1
         if(epoch == (EPOCHS-1)):
             last_epoch = True
         
-        test_loss = test_model(model.m_model, device, model.m_test_loader, model.m_test_losses, model.m_test_acc, model.m_criterion, model.m_correct_samples, model.m_incorrect_samples, 30, last_epoch)
-        print('loss val =',test_loss)
-        model.m_scheduler.step(test_loss)
+        test_model(model.m_model, device, model.m_test_loader, model.m_test_losses, model.m_test_acc, model.m_criterion, model.m_correct_samples, model.m_incorrect_samples, 30, last_epoch)
 
 import matplotlib.pyplot as plt
 def draw_accuracy_loss_change_graps(model_0,model_l1,model_l2,model_l1_l2):

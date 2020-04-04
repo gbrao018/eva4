@@ -1,7 +1,6 @@
 from __future__ import print_function
 import torch
 from torch.optim.lr_scheduler import StepLR
-from torch.optim.lr_scheduler import ReduceLROnPlateau
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
@@ -41,7 +40,6 @@ class AlbumentationPILImageDataset(Dataset):
         return img, label
         
 g_alb_pil_transform_train = Compose([
-    Resize(32,32),
     PadIfNeeded(32,32),
     RandomCrop(32,32), 
     HorizontalFlip(),
@@ -74,7 +72,7 @@ g_alb_test_set = AlbumentationPILImageDataset(image_list = g_test_set, augmentat
 
         
 class CIFARModel10_Alb:
-    def __init__(self, model, lr = 0.01, momentum = 0.9, step_size = 0, gamma = 0.01):
+    def __init__(self, model, lr = 0.001, momentum = 0.9, step_size = 0, gamma = 0.01):
         self.m_train_losses = []
         self.m_test_losses = []
         self.m_train_acc = []
@@ -85,28 +83,14 @@ class CIFARModel10_Alb:
         #self.m_optimizer = optim.Adam(self.m_model.parameters(), lr)
         self.m_optimizer = optim.SGD(self.m_model.parameters(), lr=lr, momentum=0.9, weight_decay=5e-4)
         #self.adjuster = scheduler.StepLR(self._optimizer, args.epoch_step,gamma=args.gamma)
-        #self.m_scheduler = StepLR(self.m_optimizer, step_size=10, gamma=0.5)
-        self.m_scheduler = ReduceLROnPlateau(self.m_optimizer, 'min', patience = 2)
+        self.m_scheduler = StepLR(self.m_optimizer, step_size=10, gamma=0.5)
         self.m_incorrect_samples = []
         self.m_correct_samples = []
         self.load_cifar_data(g_alb_train_set,g_alb_test_set)
         
     def clone_model(self):
         copy.deepcopy(self.m_model)
-    def save_model(self, filepath):
-        state = {
-            'epoch': 130,
-            'state_dict': cifar_model.m_model.state_dict(),
-            'optimizer': cifar_model.m_optimizer.state_dict()
-        }
-        torch.save(m_model.state_dict(), open(os.path.join(filepath, 'model.pt'), 'wb'))
-        torch.save(cifar_model.m_optimizer.state_dict(), open(os.path.join(filepath, 'optimizer.pt'), 'wb'))
-        torch.save(state, open(os.path.join(filepath, 'savedmodel'), 'wb'))
-    def load_fom_model(self, model_filepath, optimizer_filepath):
-        #model = torch.load(filepath)
-        self.m_model = torch.load(model_filepath)
-        self.m_optimizer = torch.load(optimizer_filepath)
-        
+    
     def load_cifar_data(self,train_set,test_set):
         
         self.m_train_loader = torch.utils.data.DataLoader(train_set, batch_size=256,

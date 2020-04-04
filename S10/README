@@ -1,0 +1,10 @@
+Assignment-10
+
+	Used Albumentations for image augmentation with resnet18 model. 
+	Applied Resize, Randomcrop, HorizontalFlip,VerticalFlip and Rotate and Cut out. dropout = 0.04, L1 and L2 with Lambda = 0.0004 applied.
+    We used ReduceLROnPlateau scheduler with patience = 2 and with SGD as optimizer. 
+	We drawn the LRFinder range test and identified  lr as 0.01 is good to choose.
+	We are able to achieve the accuracy of 88.34 in 50 epochs but underfitting and better model.
+
+	Used GradCam and displayed 30 incorrect samples and heat maps.
+	
