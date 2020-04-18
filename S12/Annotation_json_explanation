@@ -27,13 +27,12 @@ Example Annotation Json:
 
 I will explain the first element. Rest all elements follows same. 
 
-bearded-collie-1.jpg105912 -> bearded-collie-1.jpg Is the Annotation name we choosen. 105912 is the size of the image. Basically name is to 
-identify of the type of object. Here Dog name we gave as bearded-collie-1.jpg here. 
+bearded-collie-1.jpg105912 -> bearded-collie-1.jpg Is the image name. 105912 is the size of the image. 
 Name+Size becomes actual Annotation in json.
 
 Each Annotation has 4 immediate children elements. They are 1. filename 2. size 3. regions 4. file_attributes. I will describe them below.
 
-1. filename -> This is what we have given as Annotation name while creating annotations.
+1. filename -> Image file name
 
 2. size -> size of the actual image. Each image can have different sizes.
 
@@ -54,11 +53,11 @@ Each Annotation has 4 immediate children elements. They are 1. filename 2. size 
 	          
 		-----X axis ---> increases
 		
-	C. region_attributes:
+	C. region_attributes: (We choose these attributes while annotating)
 		Important one. This covers the object type information.
-		name -> name of the object (example bearded-collie-1)
-		type: type of the object e.g., human, cat, dog etc.
-		image_quality: 
+		name -> name of the object (example bearded-collie-1 we gave while annotating)
+		type: type of the object e.g., human, cat, dog etc. Type we choose while annotating.
+		image_quality: (We choose)
 			frontal-> attribute tells whether image appears to at front of the image. 
 			good_illumination-> true means, object is visible with good light.
 			good -> true indicates, object quaility is good. Object can easily be identified.
