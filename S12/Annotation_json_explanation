@@ -1,31 +1,4 @@
-Assignment 12:
-
-Assignment A:
-	Download this TINY IMAGENET link (http://cs231n.stanford.edu/tiny-imagenet-200.zip) dataset. 
-	Train ResNet18 on this dataset (70/30 split) for 50 Epochs. Target 50%+ Validation Accuracy. 
-Assignment B:
-	Download 50 images of dogs. 
-	Use this link http://www.robots.ox.ac.uk/~vgg/software/via/via_demo.html to annotate bounding boxes around the dogs.
-	Download JSON file. 
-	Describe the contents of this JSON file in FULL details (you don't need to describe all 10 instances, anyone would work). 
-	Find out the best total numbers of clusters.
-	
-1. created a utility method that will split the dataset in to train and test. 
-
-2. Written custom Dataset class and overwritten len and get_item methods. Converted all greay scale image to RGB. 
-
-3. All dataset goes through transformations including normalization
-
-4. Changed Resnet18 a little and used F.adaptive_average_pool2d in place avgpool2d.
-
-5. Got more than 51 % accuracy.
-
-For Assignment B, Calculated all normalized centroids of the bounding box rectangle(In this exercise, shape is limited to rectangle).
-
-Plotted those centroids using k Means and verified with K-3, K-4, K-5, K-6, K-7. I feel K=3 is reasonable for this dataset.
-	
-	
-Assignment B: #Annotation json file explanation
+#Annotation json file explanation
 
 Example Annotation Json:
 
@@ -102,4 +75,3 @@ Each Annotation has 4 immediate children elements. They are 1. filename 2. size 
 
 
 
-	
