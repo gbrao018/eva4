@@ -1,0 +1,13 @@
+Assignment-11
+
+	1. Draw the Cyclic LR graph with lr_min,lr_max,step,iterations
+	2. Create a custom Resnetwork
+	3. Use OneCyleLr Policy and find out lr_min and lr_max
+	4. Achive 90% accuracy with in 24 epochs
+	5. Used Albumentations for image augmentation ,Padding(32+4,32+4),Randomcrop, HorizontalFlip, Cutout(8,8).
+	6. Max lr at epoch5
+	
+	OneCycleLR_A11 does the lr calculation based on MaxLr at epoch 5 condition. Based on the lr vs accuracy graph, lr_max is identified 
+	and instances of optimizer and scheduler created. 
+	
+	
