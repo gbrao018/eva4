@@ -71,7 +71,10 @@ class LRFinder(object):
         self.model = model
         self.criterion = criterion
         self.history = {"lr": [], "loss": []}
+        self.accuracy = {"lr": [], "Accuracy": []}
         self.best_loss = None
+        self.best_accuracy = None
+        self.max_lr = None
         self.memory_cache = memory_cache
         self.cache_dir = cache_dir
 
@@ -177,30 +180,39 @@ class LRFinder(object):
         iter_wrapper = DataLoaderIterWrapper(train_loader)
         for iteration in tqdm(range(num_iter)):
             # Train on batch and retrieve loss
-            loss = self._train_batch(iter_wrapper, accumulation_steps)
+            loss, accuracy = self._train_batch(iter_wrapper, accumulation_steps)
             if val_loader:
                 loss = self._validate(val_loader)
 
             # Update the learning rate
             lr_schedule.step()
             self.history["lr"].append(lr_schedule.get_lr()[0])
+            self.accuracy["lr"].append(lr_schedule.get_lr()[0])
 
             # Track the best loss and smooth it if smooth_f is specified
             if iteration == 0:
                 self.best_loss = loss
+                self.best_accuracy = accuracy
+                self.max_lr =lr_schedule.get_lr()[0]
             else:
                 if smooth_f > 0:
                     loss = smooth_f * loss + (1 - smooth_f) * self.history["loss"][-1]
                 if loss < self.best_loss:
                     self.best_loss = loss
+                if accuracy > self.best_accuracy:
+                    self.best_accuracy = accuracy
+                    self.max_lr = lr_schedule.get_lr()[0]
+                
 
             # Check if the loss has diverged; if it has, stop the test
             self.history["loss"].append(loss)
+            self.accuracy["Accuracy"].append(accuracy)
             if loss > diverge_th * self.best_loss:
                 print("Stopping early, the loss has diverged")
                 break
 
         print("Learning rate search finished. See the graph with {finder_name}.plot()")
+        print("Max Accuracy = "+str(self.best_accuracy)+" at LR = "+str(self.max_lr))
 
     def _set_learning_rate(self, new_lrs):
         if not isinstance(new_lrs, list):
@@ -224,6 +236,8 @@ class LRFinder(object):
         total_loss = None  # for late initialization
 
         self.optimizer.zero_grad()
+        correct = 0
+        processed = 0
         for i in range(accumulation_steps):
             inputs, labels = iter_wrapper.get_batch()
             inputs, labels = self._move_to_device(inputs, labels)
@@ -252,10 +266,15 @@ class LRFinder(object):
                 total_loss = loss
             else:
                 total_loss += loss
+            pred = outputs.argmax(dim=1, keepdim = True)
+            correct += pred.eq(labels.view_as(pred)).sum().item()
+            processed += len(outputs)
 
+        batch_accuracy = 100 * correct / processed
         self.optimizer.step()
+        
 
-        return total_loss.item()
+        return total_loss.item(), batch_accuracy
 
     def _move_to_device(self, inputs, labels):
         def move(obj, device):
@@ -293,7 +312,7 @@ class LRFinder(object):
 
         return running_loss / len(dataloader.dataset)
 
-    def plot(self, skip_start=10, skip_end=5, log_lr=True, show_lr=None, ax=None):
+    def plot(self, skip_start=10, skip_end=5, log_lr=True, show_lr=None, ax=None, accuracy_flag = False):
         """Plots the learning rate range test.
         Arguments:
             skip_start (int, optional): number of batches to trim from the start.
@@ -321,8 +340,12 @@ class LRFinder(object):
 
         # Get the data to plot from the history dictionary. Also, handle skip_end=0
         # properly so the behaviour is the expected
-        lrs = self.history["lr"]
-        losses = self.history["loss"]
+        if accuracy_flag:
+            lrs = self.accuracy["lr"]
+            losses = self.accuracy["Accuracy"]
+        else:
+            lrs = self.history["lr"]
+            losses = self.history["loss"]
         if skip_end == 0:
             lrs = lrs[skip_start:]
             losses = losses[skip_start:]
@@ -340,7 +363,10 @@ class LRFinder(object):
         if log_lr:
             ax.set_xscale("log")
         ax.set_xlabel("Learning rate")
-        ax.set_ylabel("Loss")
+        if(accuracy_flag):
+            ax.set_ylabel("Accuracy")
+        else:
+            ax.set_ylabel("Loss")
 
         if show_lr is not None:
             ax.axvline(x=show_lr, color="red")

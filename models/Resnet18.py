@@ -16,7 +16,6 @@ class BasicBlock(nn.Module):
         if stride != 1 or in_planes != self.expansion*planes:
             self.shortcut = nn.Sequential(
                 nn.Conv2d(in_planes, self.expansion*planes, kernel_size=1, stride=stride, bias=False),
-                nn.Dropout(0.07),
                 nn.BatchNorm2d(self.expansion*planes)
             )
 
@@ -54,12 +53,18 @@ class ResNet(nn.Module):
         out = self.layer2(out)
         out = self.layer3(out)
         out = self.layer4(out)
-        out = F.avg_pool2d(out, 4)
+        #out = F.avg_pool2d(out, 4)
+        out = F.adaptive_avg_pool2d(out,1)
+        
         out = out.view(out.size(0), -1)
         out = self.linear(out)
+        #out = torch.argmax(out.clone(), 1)
         return out
 
 
 def ResNet18():
     return ResNet(BasicBlock, [2,2,2,2])
+
+def ResNet18(num_classes):
+    return ResNet(BasicBlock, [2,2,2,2],num_classes)
     
