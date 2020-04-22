@@ -134,8 +134,6 @@
 ./data/customdata/images/drone134.jpg
 ./data/customdata/images/drone135.jpg
 ./data/customdata/images/drone138.jpg
-./data/customdata/images/person139.jpg
-./data/customdata/images/person140.jpg
 
 
 
