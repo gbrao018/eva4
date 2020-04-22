@@ -3,7 +3,7 @@ ________
 YoloV3 Simplified for training on Colab with custom dataset. 
 
 _A Collage of Training images_
-![image](https://github.com/gbrao018/eva4/edit/master/YoloV3/data/customdata/images)
+![dir](https://github.com/gbrao018/eva4/edit/master/YoloV3/data/customdata/images)
 
 
 We have added a very 'smal' Coco sample imageset in the folder called smalcoco. This is to make sure you can run it without issues on Colab.
