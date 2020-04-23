@@ -129,7 +129,6 @@
 ./data/customdata/images/drone129.jpg
 ./data/customdata/images/drone130.jpg
 ./data/customdata/images/drone131.jpg
-./data/customdata/images/drone132.jpg
 ./data/customdata/images/drone133.jpg
 ./data/customdata/images/drone134.jpg
 ./data/customdata/images/drone135.jpg
