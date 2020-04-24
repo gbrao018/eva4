@@ -135,7 +135,6 @@
 ./data/customdata/images/drone138.jpg
 ./data/customdata/images/drone141.jpg
 ./data/customdata/images/drone143.jpg
-./data/customdata/images/drone144.jpg
 ./data/customdata/images/drone145.jpg
 ./data/customdata/images/drone146.jpg
 ./data/customdata/images/drone147.jpg
