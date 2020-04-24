@@ -168,7 +168,6 @@
 ./data/customdata/images/drone174.jpg
 ./data/customdata/images/drone175.jpg
 ./data/customdata/images/drone176.jpg
-./data/customdata/images/drone177.jpg
 ./data/customdata/images/drone178.jpg
 ./data/customdata/images/drone179.jpg
 ./data/customdata/images/drone180.jpg
@@ -212,10 +211,8 @@
 ./data/customdata/images/drone218.jpg
 ./data/customdata/images/drone219.jpg
 ./data/customdata/images/drone220.jpg
-
 ./data/customdata/images/drone364.jpg
 ./data/customdata/images/drone365.jpg
-./data/customdata/images/drone366.jpg
 ./data/customdata/images/drone367.jpg
 ./data/customdata/images/drone368.jpg
 ./data/customdata/images/drone369.jpg
@@ -224,7 +221,6 @@
 ./data/customdata/images/drone372.jpg
 ./data/customdata/images/drone373.jpg
 ./data/customdata/images/drone374.jpg
-./data/customdata/images/drone375.jpg
 ./data/customdata/images/drone376.jpg
 ./data/customdata/images/drone377.jpg
 ./data/customdata/images/drone378.jpg
@@ -245,7 +241,6 @@
 ./data/customdata/images/drone393.jpg
 ./data/customdata/images/drone394.jpg
 ./data/customdata/images/drone395.jpg
-./data/customdata/images/drone396.jpg
 ./data/customdata/images/drone397.jpg
 ./data/customdata/images/drone398.jpg
 ./data/customdata/images/drone399.jpg
@@ -268,11 +263,9 @@
 ./data/customdata/images/drone417.jpg
 ./data/customdata/images/drone418.jpg
 ./data/customdata/images/drone420.jpg
-./data/customdata/images/drone421.jpg
 ./data/customdata/images/drone422.jpg
 ./data/customdata/images/drone423.jpg
 ./data/customdata/images/drone424.jpg
-./data/customdata/images/drone425.jpg
 ./data/customdata/images/drone426.jpg
 ./data/customdata/images/drone427.jpg
 ./data/customdata/images/drone428.jpg
@@ -280,7 +273,6 @@
 ./data/customdata/images/drone430.jpg
 ./data/customdata/images/drone431.jpg
 ./data/customdata/images/drone432.jpg
-./data/customdata/images/drone433.jpg
 ./data/customdata/images/drone434.jpg
 ./data/customdata/images/drone435.jpg
 ./data/customdata/images/drone436.jpg
@@ -291,7 +283,6 @@
 ./data/customdata/images/drone441.jpg
 ./data/customdata/images/drone442.jpg
 ./data/customdata/images/drone443.jpg
-./data/customdata/images/drone444.jpg
 ./data/customdata/images/drone445.jpg
 ./data/customdata/images/drone446.jpg
 ./data/customdata/images/drone447.jpg
@@ -300,7 +291,6 @@
 ./data/customdata/images/drone450.jpg
 ./data/customdata/images/drone451.jpg
 ./data/customdata/images/drone452.jpg
-./data/customdata/images/drone453.jpg
 ./data/customdata/images/drone454.jpg
 ./data/customdata/images/drone455.jpg
 ./data/customdata/images/drone456.jpg
@@ -334,7 +324,6 @@
 ./data/customdata/images/drone484.jpg
 ./data/customdata/images/drone485.jpg
 ./data/customdata/images/drone486.jpg
-./data/customdata/images/drone487.jpg
 ./data/customdata/images/drone488.jpg
 ./data/customdata/images/drone489.jpg
 ./data/customdata/images/drone490.jpg
@@ -349,19 +338,14 @@
 ./data/customdata/images/drone499.jpg
 ./data/customdata/images/drone500.jpg
 ./data/customdata/images/drone501.jpg
-./data/customdata/images/drone502.jpg
 ./data/customdata/images/drone503.jpg
 ./data/customdata/images/drone504.jpg
 ./data/customdata/images/drone505.jpg
 ./data/customdata/images/drone506.jpg
-./data/customdata/images/drone507.jpg
 ./data/customdata/images/drone508.jpg
 ./data/customdata/images/drone509.jpg
-./data/customdata/images/drone510.jpg
 ./data/customdata/images/drone511.jpg
 ./data/customdata/images/drone512.jpg
-./data/customdata/images/drone513.jpg
-./data/customdata/images/drone514.jpg
 ./data/customdata/images/drone515.jpg
 ./data/customdata/images/drone516.jpg
 ./data/customdata/images/drone517.jpg
