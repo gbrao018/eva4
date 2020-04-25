@@ -8,9 +8,9 @@ _A Collage of Training images_
 
 We have added a very 'smal' Coco sample imageset in the folder called smalcoco. This is to make sure you can run it without issues on Colab.
 
-Full credit goes to [this](https://github.com/ultralytics/yolov3), and if you are looking for much more detailed explainiation and features, please refer to the original [source](https://github.com/ultralytics/yolov3). 
+Full credit goes to schoolofai and [this](https://github.com/ultralytics/yolov3), if you are looking for much more detailed explainiation and features, please refer to the original [source](https://github.com/ultralytics/yolov3). 
 
-You'll need to download the weights from the original source. 
+1. Downloaded the weights from the original source. 
 1. Create a folder called weights in the root (YoloV3) folder
 2. Download from: https://drive.google.com/open?id=1LezFG5g3BCW6iYaV89B2i64cqEUZD7e0
 3. Place 'yolov3-spp-ultralytics.pt' file in the weights folder:
@@ -28,12 +28,12 @@ For custom dataset:
 data
   --customdata
     --images/
-      --img001.jpg
-      --img002.jpg
+      --drone001.jpg
+      --drone002.jpg
       --...
     --labels/
-      --img001.txt
-      --img002.txt
+      --drone001.txt
+      --drone002.txt
       --...
     custom.data #data file
     custom.names #your class names
@@ -48,14 +48,14 @@ data
 ```
 6. As you it a poor idea to keep test and train data same, but the point of this repo is to get you up and running with YoloV3 asap. You'll probably do a mistake in writing to custom.txt file. This is how our file looks like (please note the .s and /s):
 ```
-./data/customdata/images/img001.jpg
-./data/customdata/images/img002.jpg
-./data/customdata/images/img003.jpg
+./data/customdata/images/drone001.jpg
+./data/customdata/images/drone002.jpg
+./data/customdata/images/drone003.jpg
 ...
 ```
 7. You need to add custom.names file as you can see above. For our example, we downloaded images of Walle. Our custom.names file look like this:
 ```
-walle
+drone
 ```
 8. Walle above will have a class index of 0. 
 9. For COCO's 80 classes, VOLOv3's output vector has 255 dimensions ( (4+1+80)*3). Now we have 1 class, so we would need to change it's architecture.
@@ -75,4 +75,4 @@ As you can see in the collage image above, a lot is going on, and if you are cre
 **Results**
 After training for 300 Epochs, results look awesome!
 
-![image](https://github.com/gbrao018/eva4/blob/master/YoloV3/output/drone.jpg)
+![image](https://github.com/gbrao018/eva4/blob/master/YoloV3/output/drone1.jpg)
