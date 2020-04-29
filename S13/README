@@ -7,4 +7,5 @@ Assignment B:
 	Annotate the images with bounding boxes. I did for 70% of the images and remaining 30% were used as test.
 	Created the video of drone which has been identified using YoloV3 (Youtube link: https://youtu.be/xwD-yEGlX0o)
 	
-	
+	Training: Training 300 epochs became impossible with colab. So Initially trained for 150 epochs with difficulty and saved the latest and yolov3sppltranetics weights in gdrive.
+	Restarted colab, replaced the latest saved weights into Yolo/weights directory and finished remaing 150 epochs with 50 and 100 epcohs training.
