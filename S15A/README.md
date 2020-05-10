@@ -31,12 +31,19 @@ The fore ground positions are placed into 4 rows * 5 columns obtaining 40 fg_bg 
 Basically I consider these rows as depth layers.By doing this my perception of depth is that, all these fg images in row1 share the same depth. Fg images placed in row2 share relatively at higher depth than row1. The last row fg image which occupies higher ground will share relatively higher depth comparing its previous rows.   
 Code to overlay foreground on background: The background image format is choosen as jpg, where as foreground object image is choosen as png.
                                                              
-            bg.jpg                                                                                                 fg.png
-                    
-            Fg_resized                        fg_bg                                   mask
+            bg.jpg:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img5.jpg)   
+	    
+            
+	    fg.png:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img6.jpg)
+	    
+            Fg_resized:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img7.jpg)
+	    fg_bg:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img8.jpg) 
+	    mask:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img9.jpg)
+	    
 Step#1: Resize the fg (h,w) and identify the location(x,y) to place on bg, as per below . Say w,h are the width and height of the fg 
                            
 H,0)    
+![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/bbox.jpg)
 NOW THE OVERLAYED AREA BOUNDING BOX IS bg[y:y+h, x:x+w] is our interested area where we have to put the fg object
 
 Step#2: Create an image from fg (b,g,r) channels. And normalize by deviding with 255.
@@ -45,13 +52,21 @@ fg3 = np.dstack((b,g,r)).
 fg_mask = bgr / 255.0
 fg_mask[fg_mask>0] = 1
                     
- fg3(3 channels)            fg_mask(looks black but it has 0 or 1 values)
+ fg3(3 channels):
+![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img10.jpg)
+fg_mask(looks black but it has 0 or 1 values):
+![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img11.jpg)
 
 Step#3: Override the bg[y:y+h, x:x+w] area with fg3 pixels
 fg_bg = clone(bg)
 fg_bg[y:y+h, x:x+w] = (1.0 – fg_mask) * fg_bg[y:y+h, x:x+w]+fg_mask*fg3
                           
-fg_mask*fg3 (1.0-fg_mask)*bg[y:y+h,x:x+w]    fg_bg 
+fg_mask*fg3:
+![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img11.jpg)
+(1.0-fg_mask)*bg[y:y+h,x:x+w]:
+![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img12.jpg)
+fg_bg:
+![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img13.jpg) 
 
 We store the resultant fg_bg image in jpg format to save the storage.
 fg_bg mask generation for foreground: We need the alpha channel in foreground image for transparency information which will help us in creating the mask for the fg. If we have alpha channel 
@@ -60,7 +75,12 @@ mask = np.dstack((a,a,a)) -> This will give the mask
 But we do not have the alpha channel in our fg_bg.
 So, we do it diffeently.
                
-1.	fg_bg-bg                           2. gray image (3 channels)       3.1D Black/White Mask
+1.	fg_bg-bg:
+![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img14.jpg)
+2. gray image (3 channels):
+![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img15.jpg)
+3.1D Black/White Mask:
+![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img16.jpg)
 
 1.	diff = fg_bg-bg
 2.	gray_image = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
