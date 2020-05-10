@@ -105,52 +105,89 @@ fg_bg is the input for our modal to predict depth map and mask.  400k such image
 Storage Structure: As we are using Google cloud storage and colab, We do not save all the images into one folder, which will create problem for access as it will be too huge to search. We will save the images in a structured format.
 Image naming conventions we follwed are bg1,b2,bg3 ….bg100 for back ground image
 fg
+
+bg
+
 Dataset150/
+
 	fg150/
-                         fg_1
+	
+                   fg_1
+			 
 	           fg_2
+		   
 	           …….
-                         fg_200
+		   
+                   fg_100
+			 
 	bg150/
+	
                        bg1
+		       
                        bg2
-                      ------
+		       
+                      ----
+		      
                       bg100
+		      
 	fgbg_1/
+	
 		bg1_0_0_fg_1.jpg
 		
 	fgbg_2/
+	
 	------
+	
 	------
+	
 	fgbg_100/
+	
 	mask_fgbg_1/
+	
 	mask_fgbg_2/
+	
 	…………
-mask_fgbg_100/
+	
+	mask_fgbg_100/
+	
 	depth_fgbg_1/
+	
 	depth_fgbg_2/
+	
 	…………
-depth_fgbg_100/
+	
+	depth_fgbg_100/
+
 root_dir: /content/gdrive/My Drive/eva-04/S15A/Dataset150/
 
-sub folders: fgbg150_0, fgbg150_1, …, fgbg150_100
 
-filenameing convension: bg5_0_2_flip_fg_73.jpg. Corresponding mask name is mask_bg5_0_2_flip_fg_73.jpg, corresponding depth name is depth_bg5_0_2_flip_fg_73.jpg
-bg5 -> backgroundimage name
-0 -> first row
-2 -> 3rd column
+filenameing convension: bg5_0_2_flip_fg_73.jpg. 
+
+Corresponding mask name is mask_bg5_0_2_flip_fg_73.jpg, corresponding depth name is depth_bg5_0_2_flip_fg_73.jpg
+
+bg5 -> backgroundimage name. 0 -> first row. 2 -> 3rd column
+
 flip_fg_73 -> fore ground image name(flipped version)
+
 ***For all bg combinations, only the bgX number will change.Remaining all repeat for all background images. This way, by knowing just the fg_bg image name, we can get the right mask and depth file names
   
 Colab efficiency: By runing multiple sessions same time. I am able to do multi tasking, thereby saving the time	
+
 Link for the Dataset150: https://drive.google.com/open?id=1IucmmNUapKK1i_ORIdxYSMtA72qcxTa9
 
 Total Background Images: 100
+
 Total Foreground Images: 100
+
 Total Foreground Images Masks: 100
+
 Total FGBG Images : 400000
+
 Total FGBG Mask Images : 400000
-Total FGBG Depth Images : 400000 -> https://drive.google.com/file/d/1kAG5x_3MLO8_5_USIw6oUwK5I2Gc8xpH/view?usp=sharing
+
+Total FGBG Depth Images : 400000 
+
+Link for 2nd Dataset: https://drive.google.com/file/d/1kAG5x_3MLO8_5_USIw6oUwK5I2Gc8xpH/view?usp=sharing
 
 
 
