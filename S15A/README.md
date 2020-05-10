@@ -194,8 +194,25 @@ Total FGBG Depth Images : 400000
 
 Link for 2nd Dataset: https://drive.google.com/file/d/1kAG5x_3MLO8_5_USIw6oUwK5I2Gc8xpH/view?usp=sharing
 
+This 2nd dataset has the below structure:
 
 
+![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/depth_folder.jpg)
 
+
+bg:
+![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/bg.jpg)
+
+fg:
+![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/fg.jpg)
+
+fgbg:
+![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/fgbg.jpg)
+
+mask_fgbg:
+![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/mask_fgbg.jpg)
+
+depth_fgbg:
+![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/depth_fgbg.jpg)
 
 
