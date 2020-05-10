@@ -12,10 +12,18 @@ Assuming camera position, focal length and aperture are fixed, we can observe th
 
 Example..Look at the below two images. Both are 150 * 150 
                                                              
-Original back ground image:                                                       Original Foreground image: 
-![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img1.jpg)       ![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img2.jpg)                                                              
-Overlayed image, Foreground (90*90)	Overlayed image, fore ground placed FAR 
-Placed NEAR the camera and looks bigger.                         (60*60). Size reduction and base elevation. 
+Original back ground image:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img1.jpg)                                   
+
+Original Foreground image:![image(https://github.com/gbrao018/eva4/blob/master/S15A/images/img2.png)
+
+Overlayed image, Foreground (90*90):![image(https://github.com/gbrao018/eva4/blob/master/S15A/images/img3.jpg)
+
+Placed NEAR the camera and looks bigger
+
+Overlayed image, fore ground placed FAR:![image(https://github.com/gbrao018/eva4/blob/master/S15A/images/img4.jpg)
+
+(60*60). Size reduction and base elevation. 
+                         
                                                                        Fig 1.0
 
   Let’s call backgound image as ‘bg’, foreground image as ‘fg’ and overlayed image as ‘fg_bg’ from now on interchangibly.
