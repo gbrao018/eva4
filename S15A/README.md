@@ -205,7 +205,7 @@ Total FGBG Mask Images : 400000
 
 Total FGBG Depth Images : 400000 
 
-Link for 2nd Dataset: https://drive.google.com/file/d/1kAG5x_3MLO8_5_USIw6oUwK5I2Gc8xpH/view?usp=sharing
+Link for 2nd Dataset(224*224): https://drive.google.com/file/d/1kAG5x_3MLO8_5_USIw6oUwK5I2Gc8xpH/view?usp=sharing
 
 This 2nd dataset has the below structure:
 
