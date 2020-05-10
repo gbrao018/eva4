@@ -3,11 +3,12 @@ Project Scope Description: We are  going to solve the multi object training as a
 What are we going to predict?. Given a background image and a overlayed image (foreground placed on the given background), we are going to predict the depth map for the overlayed image and mask for the foreground image. As we are attempting this as a supervised learning , given background and overlayed images, we will create the depth map and mask required for ground truths which are used in training phase.  
 
 
-	Hence, we are not classifying the objects present in the scene. We are not doing instance segmentation. We are only doing pixel-wise segmentation. 
+	Hence, we are not classifying the objects present in the scene. We are not doing instance segmentation. 
 	
-	We will assign the labels to each pixel whether it belongs to background or foreground# 
-
+	We are only doing pixel-wise segmentation. We will assign the labels to each pixel whether it belongs to background or foreground.  And each pixelo should carry the depth information also.
+	
 Dataset Prepration:
+
 	We are simulating a still camera environment which sees a background and then some portion of it is occluded when foreground objects come in between the camera and background. We are going to create 400000 overlayed scene images with 100 such backgrounds and 200 fore grounds (100 foreground + 100 of their flips).
 	
 	Strategy to place the foreground on background: What we are doing here is Monocular depth estimation. Monocular cues are the ones that are obtained from the 2D image of only one eye. These include the following. 
