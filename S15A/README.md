@@ -30,17 +30,18 @@ Overlayed image, fore ground placed FAR:![image](https://github.com/gbrao018/eva
 The fore ground positions are placed into 4 rows * 5 columns obtaining 40 fg_bg images for one bg and 1fg. Fore ground image is cloned and resized for each row. 1st row fg image size is 90*90, second row fg size is 80*80, third row fg size is 70*70, fourth row fg size is 60*60.  We did not go beyond 60*60 because, too much the small image means difficult to train for accuracy.
 Basically I consider these rows as depth layers.By doing this my perception of depth is that, all these fg images in row1 share the same depth. Fg images placed in row2 share relatively at higher depth than row1. The last row fg image which occupies higher ground will share relatively higher depth comparing its previous rows.   
 Code to overlay foreground on background: The background image format is choosen as jpg, where as foreground object image is choosen as png.
-                                                             
-            bg.jpg:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img5.jpg)   
-	    
-            
-	    fg.png:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img6.jpg)
-	    
-            Fg_resized:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img7.jpg)
-	    fg_bg:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img8.jpg) 
-	    mask:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img9.jpg)
-	    
-Step#1: Resize the fg (h,w) and identify the location(x,y) to place on bg, as per below . Say w,h are the width and height of the fg 
+
+bg.jpg:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img5.jpg)
+
+fg.png:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img6.jpg)
+
+fg_resized:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img7.jpg)
+
+fg_bg:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img8.jpg) 
+
+mask:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img9.jpg)
+
+    #1: Resize the fg (h,w) and identify the location(x,y) to place on bg, as per below . Say w,h are the width and height of the fg 
                            
 H,0)    
 ![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/bbox.jpg)
