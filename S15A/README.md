@@ -212,6 +212,26 @@ This 2nd dataset has the below structure:
 
 ![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/depth_folder.jpg)
 
+MEAN AND STD VALUES:
+
+For fg_bg images:
+
+Mean= [149.17579724 143.51813416 136.34473418]
+
+STD = [10.9817084 10.54722837 9.749792]
+
+For mask images (1 Channel ):
+
+Mean = 19.611268351153935
+
+STD = 21.938615940996442
+
+For depth images:
+
+Mean = 19.611268351153935
+
+STD = 21.938615940996442
+
 
 bg:
 ![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/bg.jpg)
