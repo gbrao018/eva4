@@ -144,3 +144,16 @@ flip_fg_73 -> fore ground image name(flipped version)
   
 Colab efficiency: By runing multiple sessions same time. I am able to do multi tasking, thereby saving the time	
 Link for the Dataset150: https://drive.google.com/open?id=1IucmmNUapKK1i_ORIdxYSMtA72qcxTa9
+
+Total Background Images: 100
+Total Foreground Images: 100
+Total Foreground Images Masks: 100
+Total FGBG Images : 400000
+Total FGBG Mask Images : 400000
+Total FGBG Depth Images : 400000 -> https://drive.google.com/file/d/1kAG5x_3MLO8_5_USIw6oUwK5I2Gc8xpH/view?usp=sharing
+
+
+
+
+
+
