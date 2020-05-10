@@ -77,11 +77,16 @@ fg_bg:
 ![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img12.jpg) 
 
 We store the resultant fg_bg image in jpg format to save the storage.
-fg_bg mask generation for foreground: We need the alpha channel in foreground image for transparency information which will help us in creating the mask for the fg. If we have alpha channel 
+
+FG_BG MASK GENERATION FOR FOREGROUND: 
+
+We need the alpha channel in foreground image for transparency information which will help us in creating the mask for the fg. If we have alpha channel 
+
 b,g,r,a = cv2.split(fg)
+
 mask = np.dstack((a,a,a)) -> This will give the mask
-But we do not have the alpha channel in our fg_bg.
-So, we do it diffeently.
+
+But we do not have the alpha channel in our fg_bg. So, we do it diffeently.
 
 Given BG and FGBG, BELOW LOGIC CREATES FGBG MASK:
 
