@@ -5,7 +5,11 @@ What are we going to predict?. Given a background image and a overlayed image (f
 
 	Hence, we are not classifying the objects present in the scene. We are not doing instance segmentation. 
 	
-	We are only doing pixel-wise segmentation. We will assign the labels to each pixel whether it belongs to background or foreground.  And each pixelo should carry the depth information also.
+	We are only doing pixel-wise classification and depth prediction. 
+	
+	We will assign the labels to each pixel whether it belongs to background or foreground.  
+	
+	And each pixelo should carry the depth information also.
 	
 Dataset Prepration:
 
