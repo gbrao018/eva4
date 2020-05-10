@@ -206,11 +206,14 @@ bg:
 fg:
 ![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/fg.jpg)
 
+fg mask:
+![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/fg_mask.jpg)
+
 fgbg:
 ![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/fgbg.jpg)
 
 mask_fgbg:
-![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/mask_fgbg.jpg)
+![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/mask.jpg)
 
 depth_fgbg:
 ![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/depth_fgbg.jpg)
