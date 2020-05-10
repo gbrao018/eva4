@@ -250,3 +250,4 @@ depth_fgbg:
 ![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/depth_fgbg.jpg)
 
 
+Team members: Ganji Babu Rao, D.Rohit, Varinder Singh Sandhu
