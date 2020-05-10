@@ -6,13 +6,14 @@ Hence, we are not classifying the objects present in the scene. We are not doing
 
 Dataset Prepration:
 	We are simulating a still camera environment which sees a background and then some portion of it is occluded when foreground objects come in between the camera and background. We are going to create 400000 overlayed scene images with 100 such backgrounds and 200 fore grounds (100 foreground + 100 of their flips).
-	Strategy to place the foreground on background: What we are doing here is Monocular depth estimation. Monocular cues are the ones that are obtained from the 2D image of only one eye. These include the following. 1. Occlusion: When one object is hidden fully or partially, this background/hidden (occluded) object is considered to be farther away, behind fore ground object which is covering it (occluding object). 2. Relative Cues: The second cue is that of relative height. The objects that are farther away have higher bases in the image as shown in below Fig1.0. The couple in this figure are perceived at different depths.
+	Strategy to place the foreground on background: What we are doing here is Monocular depth estimation. Monocular cues are the ones that are obtained from the 2D image of only one eye. These include the following. 1. Occlusion: When one object is hidden fully or partially, this background/hidden (occluded) object is considered to be farther away, behind fore ground object which is covering it (occluding object). 2. Relative Cues: The second cue is that of relative height. The objects that are farther away have higher bases in the image as shown in below Fig1.0. The couple in this figure are perceived at different depths
+	.
 Assuming camera position, focal length and aperture are fixed, we can observe that an object placed near the camera looks bigger and occupy more pixels on image than the object which is placed far from camera. So while positioning a foreground image on various places of background image, we will simulate and resize fore ground image such that, foreground sizes becomes smaller moving in height direction away from camera.
 
 Example..Look at the below two images. Both are 150 * 150 
                                                              
 Original back ground image:                                                       Original Foreground image: 
-                                                              
+![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img1.jpg)       ![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img2.jpg)                                                              
 Overlayed image, Foreground (90*90)	Overlayed image, fore ground placed FAR 
 Placed NEAR the camera and looks bigger.                         (60*60). Size reduction and base elevation. 
                                                                        Fig 1.0
