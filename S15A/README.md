@@ -9,7 +9,7 @@ What are we going to predict?. Given a background image and a overlayed image (f
 	
 	We will assign the labels to each pixel whether it belongs to background or foreground.  
 	
-	And each pixelo should carry the depth information also.
+	And each pixel should carry the depth information also.
 	
 Dataset Prepration:
 
@@ -44,8 +44,6 @@ Now , below are the choosen images for illustration
 bg.jpg:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img1.jpg)
 
 fg.png:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img5.jpg)
-
-fg_resized:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img6.jpg)
 
 fg_bg:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img7.jpg) 
 
