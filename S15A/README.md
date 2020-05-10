@@ -88,20 +88,10 @@ b,g,r,a = cv2.split(fg)
 mask = np.dstack((a,a,a)) -> This will give the mask
 But we do not have the alpha channel in our fg_bg.
 So, we do it diffeently.
-               
-1.fg_bg-bg:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img13.jpg)
-
-2. gray image (3 channels):![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img14.jpg)
-
-3.1D Black/White Mask:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img15.jpg)
 
 Given BG and FGBG, BELOW LOGIC CREATES FGBG MASK:
 
-1.	diff = fg_bg-bg
-
-2.	gray_image = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
-
-3.	gray_image[gray_image>0] = 255
+mask process:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img18.jpg)
 
 cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY) is the open cv function to convert to gray scale
 gray_image[gray_image>0] = 255, will create 1D mono color Mask either black or white pixel
