@@ -28,8 +28,11 @@ Overlayed image, fore ground placed FAR:![image](https://github.com/gbrao018/eva
 
   Let’s call backgound image as ‘bg’, foreground image as ‘fg’ and overlayed image as ‘fg_bg’ from now on interchangibly.
 The fore ground positions are placed into 4 rows * 5 columns obtaining 40 fg_bg images for one bg and 1fg. Fore ground image is cloned and resized for each row. 1st row fg image size is 90*90, second row fg size is 80*80, third row fg size is 70*70, fourth row fg size is 60*60.  We did not go beyond 60*60 because, too much the small image means difficult to train for accuracy.
-Basically I consider these rows as depth layers.By doing this my perception of depth is that, all these fg images in row1 share the same depth. Fg images placed in row2 share relatively at higher depth than row1. The last row fg image which occupies higher ground will share relatively higher depth comparing its previous rows.   
-Code to overlay foreground on background: The background image format is choosen as jpg, where as foreground object image is choosen as png.
+Basically I consider these rows as depth layers.By doing this my perception of depth is that, all these fg images in row1 share the same depth. Fg images placed in row2 share relatively at higher depth than row1. The last row fg image which occupies higher ground will share relatively higher depth comparing its previous rows.
+
+PROCUDURE TO CREATE OVERLAY FOREGROUND ON BACKGROUND: The background image format is choosen as jpg, where as foreground object image is choosen as png. png because we are creating mask for fg only.
+
+Now , below are the choosen images for illustration
 
 bg.jpg:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img1.jpg)
 
@@ -41,7 +44,14 @@ fg_bg:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img7.jpg
 
 mask_fgbg:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/mask_fgbg.jpg)
 
-    #1: Resize the fg (h,w) and identify the location(x,y) to place on bg, as per below . Say w,h are the width and height of the fg 
+
+FG MASK CREATION:
+b,g,r,a = cv2.split(fg)
+fg_mask = np.dstack((a,a,a))
+
+OVERLAY CREATION STEPS:
+
+Step1: Resize the fg (h,w) and identify the location(x,y) to place on bg, as per below . Say w,h are the width and height of the fg 
                            
 H,0)    
 ![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/bbox.jpg)
@@ -49,13 +59,10 @@ NOW THE OVERLAYED AREA BOUNDING BOX IS bg[y:y+h, x:x+w] is our interested area w
 
 Step#2: Create an image from fg (b,g,r) channels. And normalize by deviding with 255.
 b,g,r,a = cv2.split(fg)
-fg3 = np.dstack((b,g,r)). 
+fg3 = np.dstack((b,g,r)) 
 fg_mask = bgr / 255.0
 fg_mask[fg_mask>0] = 1
                     
- fg3(3 channels):![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img9.jpg)
-fg_mask:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img10.jpg)
-
 Step#3: Override the bg[y:y+h, x:x+w] area with fg3 pixels
 fg_bg = clone(bg)
 fg_bg[y:y+h, x:x+w] = (1.0 – fg_mask) * fg_bg[y:y+h, x:x+w]+fg_mask*fg3
