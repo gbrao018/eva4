@@ -191,6 +191,24 @@ Colab efficiency: By runing multiple sessions same time. I am able to do multi t
 
 Link for the Dataset150: https://drive.google.com/open?id=1IucmmNUapKK1i_ORIdxYSMtA72qcxTa9
 
+Inputs Used to create Dataset:
+
+. background images of shape 150*150*3 in .jpg format
+
+. foreground images with transparent background of shape 150*150*4 in .png format
+
+
+Images in Dataset:
+
+. fg_bg images of shape 150*150*3 in .jpg format
+
+. mask images of shape 150*150*1 in .jpg format
+
+. depth images of shape 150*150*1 in .jpg
+
+
+Total Images Of each Kind:
+
 Total Background Images: 100
 
 Total Foreground Images: 100
@@ -202,6 +220,8 @@ Total FGBG Images : 400000
 Total FGBG Mask Images : 400000
 
 Total FGBG Depth Images : 400000 
+
+Total size of the Dataset: 4.5 GB
 
 Link for 2nd Dataset(224*224): https://drive.google.com/file/d/1kAG5x_3MLO8_5_USIw6oUwK5I2Gc8xpH/view?usp=sharing
 
@@ -231,23 +251,11 @@ This 2nd dataset has the below structure(Thanks to Rohit, my group mate for 2nd 
 	STD = 21.938615940996442
 
 
-bg:
-![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/bg.jpg)
+Total size of the dataset: Dataset.zip of size 4.62 gb
 
-fg:
-![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/fg.jpg)
+Dataset samples:
 
-fg mask:
-![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/fg_mask.jpg)
-
-fgbg:
-![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/fgbg.jpg)
-
-mask_fgbg:
-![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/mask.jpg)
-
-depth_fgbg:
-![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/depth_fgbg.jpg)
+![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/show.png)
 
 
 Team members: Ganji Babu Rao, D.Rohit, Varinder Singh Sandhu
