@@ -52,21 +52,19 @@ fg3 = np.dstack((b,g,r)).
 fg_mask = bgr / 255.0
 fg_mask[fg_mask>0] = 1
                     
- fg3(3 channels):
-![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img10.jpg)
-fg_mask(looks black but it has 0 or 1 values):
-![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img11.jpg)
+ fg3(3 channels):![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img9.jpg)
+fg_mask:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img10.jpg)
 
 Step#3: Override the bg[y:y+h, x:x+w] area with fg3 pixels
 fg_bg = clone(bg)
 fg_bg[y:y+h, x:x+w] = (1.0 – fg_mask) * fg_bg[y:y+h, x:x+w]+fg_mask*fg3
-                          
+                      
 fg_mask*fg3:
-![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img11.jpg)
+![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img10.jpg)
 (1.0-fg_mask)*bg[y:y+h,x:x+w]:
-![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img12.jpg)
+![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img11.jpg)
 fg_bg:
-![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img13.jpg) 
+![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img12.jpg) 
 
 We store the resultant fg_bg image in jpg format to save the storage.
 fg_bg mask generation for foreground: We need the alpha channel in foreground image for transparency information which will help us in creating the mask for the fg. If we have alpha channel 
@@ -75,12 +73,11 @@ mask = np.dstack((a,a,a)) -> This will give the mask
 But we do not have the alpha channel in our fg_bg.
 So, we do it diffeently.
                
-1.	fg_bg-bg:
-![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img14.jpg)
-2. gray image (3 channels):
-![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img15.jpg)
-3.1D Black/White Mask:
-![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img16.jpg)
+1.fg_bg-bg:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img13.jpg)
+
+2. gray image (3 channels):![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img14.jpg)
+
+3.1D Black/White Mask:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img15.jpg)
 
 1.	diff = fg_bg-bg
 2.	gray_image = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
@@ -91,21 +88,12 @@ gray_image[gray_image>0] = 255, will create 1D mono color Mask either black or w
 
     
 **By storingt 1D grayscale Mask, we are actually reducing storage.
-               
-
-
-
-
-
-
-
-
-
-
-
+          
 Storage Optimization:
                                               
-Jpg (10kb)                                                                                             png(40 kb)
+
+jpg image(10kb):![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img16.jpg)
+png(40 kb):![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img17.jpg)
 
 These two fg_bg images one in jpg format the other in png format. Visually there is not much difference. But png is 40kb and jpg is 10 kb. So we will store the fg_bg overlayed image in jpg format.
 fg_bg is the input for our modal to predict depth map and mask.  400k such images we need to store. This way we can reduce the storage from 400000*40kb to 400000*10kb i.e., reduced to 4 GB from otherwise 16 GB.
