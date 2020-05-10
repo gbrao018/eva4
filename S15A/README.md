@@ -31,15 +31,15 @@ The fore ground positions are placed into 4 rows * 5 columns obtaining 40 fg_bg 
 Basically I consider these rows as depth layers.By doing this my perception of depth is that, all these fg images in row1 share the same depth. Fg images placed in row2 share relatively at higher depth than row1. The last row fg image which occupies higher ground will share relatively higher depth comparing its previous rows.   
 Code to overlay foreground on background: The background image format is choosen as jpg, where as foreground object image is choosen as png.
 
-bg.jpg:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img5.jpg)
+bg.jpg:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img1.jpg)
 
-fg.png:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img6.jpg)
+fg.png:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img5.jpg)
 
-fg_resized:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img7.jpg)
+fg_resized:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img6.jpg)
 
-fg_bg:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img8.jpg) 
+fg_bg:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img7.jpg) 
 
-mask:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img9.jpg)
+mask:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img8.jpg)
 
     #1: Resize the fg (h,w) and identify the location(x,y) to place on bg, as per below . Say w,h are the width and height of the fg 
                            
