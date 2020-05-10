@@ -193,33 +193,33 @@ Link for the Dataset150: https://drive.google.com/open?id=1IucmmNUapKK1i_ORIdxYS
 
 Inputs Used to create Dataset:
 
-. background images of shape 150*150*3 in .jpg format
+ 	background images of shape [150,150,3] in .jpg format
 
-. foreground images with transparent background of shape 150*150*4 in .png format
+	foreground images with transparent background of shape [150,150,4] in .png format
 
 
 Images in Dataset:
 
-. fg_bg images of shape 150*150*3 in .jpg format
+	fg_bg images of shape [150,150,3] in .jpg format
 
-. mask images of shape 150*150*1 in .jpg format
+	mask images of shape [150,150,1] in .jpg format
 
-. depth images of shape 150*150*1 in .jpg
+	depth images of shape [150,150,1] in .jpg
 
 
 Total Images Of each Kind:
 
-Total Background Images: 100
+	Total Background Images: 100
 
-Total Foreground Images: 100
+	Total Foreground Images: 100
 
-Total Foreground Images Masks: 100
+	Total Foreground Images Masks: 100
 
-Total FGBG Images : 400000
+	Total FGBG Images : 400000
 
-Total FGBG Mask Images : 400000
+	Total FGBG Mask Images : 400000
 
-Total FGBG Depth Images : 400000 
+	Total FGBG Depth Images : 400000 
 
 Total size of the Dataset: 4.5 GB
 
