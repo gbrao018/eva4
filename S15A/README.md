@@ -39,7 +39,7 @@ fg_resized:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img
 
 fg_bg:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img7.jpg) 
 
-mask:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img8.jpg)
+mask_fgbg:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/mask_fgbg.jpg)
 
     #1: Resize the fg (h,w) and identify the location(x,y) to place on bg, as per below . Say w,h are the width and height of the fg 
                            
