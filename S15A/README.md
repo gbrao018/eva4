@@ -30,13 +30,21 @@ Overlayed image, fore ground placed FAR:![image](https://github.com/gbrao018/eva
 The fore ground positions are placed into 4 rows * 5 columns obtaining 40 fg_bg images for one bg and 1fg. Fore ground image is cloned and resized for each row. 1st row fg image size is 90*90, second row fg size is 80*80, third row fg size is 70*70, fourth row fg size is 60*60.  We did not go beyond 60*60 because, too much the small image means difficult to train for accuracy.
 Basically I consider these rows as depth layers.By doing this my perception of depth is that, all these fg images in row1 share the same depth. Fg images placed in row2 share relatively at higher depth than row1. The last row fg image which occupies higher ground will share relatively higher depth comparing its previous rows.   
 Code to overlay foreground on background: The background image format is choosen as jpg, where as foreground object image is choosen as png.
-                                                             
-            bg.jpg                                                                                                 fg.png
-                    
-            Fg_resized                        fg_bg                                   mask
-Step#1: Resize the fg (h,w) and identify the location(x,y) to place on bg, as per below . Say w,h are the width and height of the fg 
+
+bg.jpg:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img5.jpg)
+
+fg.png:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img6.jpg)
+
+fg_resized:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img7.jpg)
+
+fg_bg:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img8.jpg) 
+
+mask:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img9.jpg)
+
+    #1: Resize the fg (h,w) and identify the location(x,y) to place on bg, as per below . Say w,h are the width and height of the fg 
                            
 H,0)    
+![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/bbox.jpg)
 NOW THE OVERLAYED AREA BOUNDING BOX IS bg[y:y+h, x:x+w] is our interested area where we have to put the fg object
 
 Step#2: Create an image from fg (b,g,r) channels. And normalize by deviding with 255.
@@ -45,13 +53,19 @@ fg3 = np.dstack((b,g,r)).
 fg_mask = bgr / 255.0
 fg_mask[fg_mask>0] = 1
                     
- fg3(3 channels)            fg_mask(looks black but it has 0 or 1 values)
+ fg3(3 channels):![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img9.jpg)
+fg_mask:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img10.jpg)
 
 Step#3: Override the bg[y:y+h, x:x+w] area with fg3 pixels
 fg_bg = clone(bg)
 fg_bg[y:y+h, x:x+w] = (1.0 – fg_mask) * fg_bg[y:y+h, x:x+w]+fg_mask*fg3
-                          
-fg_mask*fg3 (1.0-fg_mask)*bg[y:y+h,x:x+w]    fg_bg 
+                      
+fg_mask*fg3:
+![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img10.jpg)
+(1.0-fg_mask)*bg[y:y+h,x:x+w]:
+![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img11.jpg)
+fg_bg:
+![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img12.jpg) 
 
 We store the resultant fg_bg image in jpg format to save the storage.
 fg_bg mask generation for foreground: We need the alpha channel in foreground image for transparency information which will help us in creating the mask for the fg. If we have alpha channel 
@@ -60,7 +74,11 @@ mask = np.dstack((a,a,a)) -> This will give the mask
 But we do not have the alpha channel in our fg_bg.
 So, we do it diffeently.
                
-1.	fg_bg-bg                           2. gray image (3 channels)       3.1D Black/White Mask
+1.fg_bg-bg:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img13.jpg)
+
+2. gray image (3 channels):![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img14.jpg)
+
+3.1D Black/White Mask:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img15.jpg)
 
 1.	diff = fg_bg-bg
 2.	gray_image = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
@@ -71,21 +89,12 @@ gray_image[gray_image>0] = 255, will create 1D mono color Mask either black or w
 
     
 **By storingt 1D grayscale Mask, we are actually reducing storage.
-               
-
-
-
-
-
-
-
-
-
-
-
+          
 Storage Optimization:
                                               
-Jpg (10kb)                                                                                             png(40 kb)
+
+jpg image(10kb):![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img16.jpg)
+png(40 kb):![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img17.jpg)
 
 These two fg_bg images one in jpg format the other in png format. Visually there is not much difference. But png is 40kb and jpg is 10 kb. So we will store the fg_bg overlayed image in jpg format.
 fg_bg is the input for our modal to predict depth map and mask.  400k such images we need to store. This way we can reduce the storage from 400000*40kb to 400000*10kb i.e., reduced to 4 GB from otherwise 16 GB.
