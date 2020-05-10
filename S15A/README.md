@@ -16,15 +16,9 @@ Original back ground image:![image](https://github.com/gbrao018/eva4/blob/master
 
 Original fore ground image:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img2.png)                                   
 
-Overlayed image, Foreground (90*90):![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img3.jpg)
-
-Placed NEAR the camera and looks bigger
-
-Overlayed image, fore ground placed FAR:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img4.jpg)
-
-(60*60). Size reduction and base elevation. 
-                         
-                                                                       Fig 1.0
+                       
+Fig 1.0:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/fig1.jpg)                                   
+			
 
   Let’s call backgound image as ‘bg’, foreground image as ‘fg’ and overlayed image as ‘fg_bg’ from now on interchangibly.
 The fore ground positions are placed into 4 rows * 5 columns obtaining 40 fg_bg images for one bg and 1fg. Fore ground image is cloned and resized for each row. 1st row fg image size is 90*90, second row fg size is 80*80, third row fg size is 70*70, fourth row fg size is 60*60.  We did not go beyond 60*60 because, too much the small image means difficult to train for accuracy.
