@@ -119,10 +119,10 @@ These two fg_bg images one in jpg format the other in png format. Visually there
 fg_bg is the input for our modal to predict depth map and mask.  400k such images we need to store. This way we can reduce the storage from 400000*40kb to 400000*10kb i.e., reduced to 4 GB from otherwise 16 GB.
  Also, the ground truth images i.e., mask and depth maps are stored in 1D. This will also save the sorage. 
 Storage Structure: As we are using Google cloud storage and colab, We do not save all the images into one folder, which will create problem for access as it will be too huge to search. We will save the images in a structured format.
-Image naming conventions we follwed are bg1,b2,bg3 ….bg100 for back ground image
-fg
+Image naming conventions we follwed are bg1,b2,bg3 ….bg100 for back ground image.fg_1,fg_2..are for foreground images.
 
-bg
+For depth masks, we used densedepth from !git clone https://github.com/ialhashim/DenseDepth.git. We used 224*224 dataset to generate depth maps.
+
 
 Dataset150/
 
