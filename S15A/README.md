@@ -2,7 +2,7 @@ Project Scope Description: We are  going to solve the multi object training as a
 
 What are we going to predict?. Given a background image and a overlayed image (foreground placed on the given background), we are going to predict the depth map for the overlayed image and mask for the foreground image. As we are attempting this as a supervised learning , given background and overlayed images, we will create the depth map and mask required for ground truths which are used in training phase.  
 
-Hence, we are not classifying the objects present in the scene. We are not doing instance segmentation. We are only doing pixel-wise segmentation. We will assign the labels to each pixel whether it belongs to background or foreground 
+#Hence, we are not classifying the objects present in the scene. We are not doing instance segmentation. We are only doing pixel-wise segmentation. We will assign the labels to each pixel whether it belongs to background or foreground# 
 
 Dataset Prepration:
 	We are simulating a still camera environment which sees a background and then some portion of it is occluded when foreground objects come in between the camera and background. We are going to create 400000 overlayed scene images with 100 such backgrounds and 200 fore grounds (100 foreground + 100 of their flips).
@@ -16,15 +16,9 @@ Original back ground image:![image](https://github.com/gbrao018/eva4/blob/master
 
 Original fore ground image:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img2.png)                                   
 
-Overlayed image, Foreground (90*90):![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img3.jpg)
-
-Placed NEAR the camera and looks bigger
-
-Overlayed image, fore ground placed FAR:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img4.jpg)
-
-(60*60). Size reduction and base elevation. 
-                         
-                                                                       Fig 1.0
+                       
+Fig 1.0:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/fig1.jpg)                                   
+			
 
   Let’s call backgound image as ‘bg’, foreground image as ‘fg’ and overlayed image as ‘fg_bg’ from now on interchangibly.
 The fore ground positions are placed into 4 rows * 5 columns obtaining 40 fg_bg images for one bg and 1fg. Fore ground image is cloned and resized for each row. 1st row fg image size is 90*90, second row fg size is 80*80, third row fg size is 70*70, fourth row fg size is 60*60.  We did not go beyond 60*60 because, too much the small image means difficult to train for accuracy.
@@ -83,11 +77,16 @@ fg_bg:
 ![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img12.jpg) 
 
 We store the resultant fg_bg image in jpg format to save the storage.
-fg_bg mask generation for foreground: We need the alpha channel in foreground image for transparency information which will help us in creating the mask for the fg. If we have alpha channel 
+
+FG_BG MASK GENERATION FOR FOREGROUND: 
+
+We need the alpha channel in foreground image for transparency information which will help us in creating the mask for the fg. If we have alpha channel 
+
 b,g,r,a = cv2.split(fg)
+
 mask = np.dstack((a,a,a)) -> This will give the mask
-But we do not have the alpha channel in our fg_bg.
-So, we do it diffeently.
+
+But we do not have the alpha channel in our fg_bg. So, we do it diffeently.
 
 Given BG and FGBG, BELOW LOGIC CREATES FGBG MASK:
 
@@ -111,42 +110,92 @@ fg_bg is the input for our modal to predict depth map and mask.  400k such image
 Storage Structure: As we are using Google cloud storage and colab, We do not save all the images into one folder, which will create problem for access as it will be too huge to search. We will save the images in a structured format.
 Image naming conventions we follwed are bg1,b2,bg3 ….bg100 for back ground image
 fg
+
+bg
+
 Dataset150/
+
 	fg150/
-                         fg_1
+	
+                   fg_1
+			 
 	           fg_2
+		   
 	           …….
-                         fg_200
+		   
+                   fg_100
+			 
 	bg150/
+	
                        bg1
+		       
                        bg2
-                      ------
+		       
+                      ----
+		      
                       bg100
+		      
 	fgbg_1/
+	
 		bg1_0_0_fg_1.jpg
 		
 	fgbg_2/
+	
 	------
+	
 	------
+	
 	fgbg_100/
+	
 	mask_fgbg_1/
+	
 	mask_fgbg_2/
+	
 	…………
-mask_fgbg_100/
+	
+	mask_fgbg_100/
+	
 	depth_fgbg_1/
+	
 	depth_fgbg_2/
+	
 	…………
-depth_fgbg_100/
+	
+	depth_fgbg_100/
+
 root_dir: /content/gdrive/My Drive/eva-04/S15A/Dataset150/
 
-sub folders: fgbg150_0, fgbg150_1, …, fgbg150_100
 
-filenameing convension: bg5_0_2_flip_fg_73.jpg. Corresponding mask name is mask_bg5_0_2_flip_fg_73.jpg, corresponding depth name is depth_bg5_0_2_flip_fg_73.jpg
-bg5 -> backgroundimage name
-0 -> first row
-2 -> 3rd column
+filenameing convension: bg5_0_2_flip_fg_73.jpg. 
+
+Corresponding mask name is mask_bg5_0_2_flip_fg_73.jpg, corresponding depth name is depth_bg5_0_2_flip_fg_73.jpg
+
+bg5 -> backgroundimage name. 0 -> first row. 2 -> 3rd column
+
 flip_fg_73 -> fore ground image name(flipped version)
+
 ***For all bg combinations, only the bgX number will change.Remaining all repeat for all background images. This way, by knowing just the fg_bg image name, we can get the right mask and depth file names
   
 Colab efficiency: By runing multiple sessions same time. I am able to do multi tasking, thereby saving the time	
+
 Link for the Dataset150: https://drive.google.com/open?id=1IucmmNUapKK1i_ORIdxYSMtA72qcxTa9
+
+Total Background Images: 100
+
+Total Foreground Images: 100
+
+Total Foreground Images Masks: 100
+
+Total FGBG Images : 400000
+
+Total FGBG Mask Images : 400000
+
+Total FGBG Depth Images : 400000 
+
+Link for 2nd Dataset: https://drive.google.com/file/d/1kAG5x_3MLO8_5_USIw6oUwK5I2Gc8xpH/view?usp=sharing
+
+
+
+
+
+
