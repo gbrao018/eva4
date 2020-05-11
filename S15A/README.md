@@ -258,4 +258,4 @@ Dataset samples:
 ![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/show.png)
 
 
-Team members: Ganji Babu Rao, D.Rohit, Varinder Singh Sandhu
+Team members: Ganji Babu Rao, Rohit, Varinder Singh Sandhu
