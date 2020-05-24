@@ -7,14 +7,14 @@ depth map for the overlayed image and mask for the foreground image.
 
 	To recap, We created the bg, fg, fgbg and corresponding ground truth depth and mask images in 15A (Please look for the README.md of 15A for dataset preperation strategy). 
 
-What are the initial thoughts?. So much to take care. many thoughts came into mind. I have to create a modal is one thing. Running the modal and verifying its accuracy on 
-huge dataset of 4 lac is a daunting task. Say, we devide the 4 lac samples in to 3 lac for training and 1 lac for test. With Image size is 224*224 
-, colab could only take a batch size of 16 and should run 300000/16 = 18750 batches for one epoch. As per the observation, 1 batch takes, 1.4 second time,
-and the whole 18750 batches takes almost 7.3 hrs. So running an epoch this much time without even knowning wheather the mpodal works or not, whether loss function converges or not
-is not a good idea. So What should we do?. 
-	I did reduce the image size to 32*32, so that I can use batch size of 1024 in colab. This worked. With this we only have to run 293 batches which will take less than 7 minutes.
-I further reduced the running time, by starting with less training samples say 30k , then moving onto 100k, 200k  , finally 300k.
+Many thoughts came into mind. Creating a modal is one thing, but running the modal and verifying its accuracy on 
+huge dataset of 4 lac is another challenge. I devided the total 4 lac samples in to 3 lac for training, and 1 lac for test. 
 
+	With Image size is 224*224, colab can take a batch size of 16, anything ,more than that it throws "Cuda out of Memory" error. With 16 batch size, total batches= 300000/16 = 18750 for one epoch. 
+	As per the observation, 1 batch takes, 1.4 second time, and the whole 18750 batches takes almost 7.3 hrs. My first task is to understand whether modal is working or not and to understand different loss functions.
+	
+	So, I did reduce the image size to 32*32, so that I can use batch size of 1024 in colab. This worked. With this we only have to run 293 batches which will take less than 7 minutes for the whole 300k training dataset.
+	
 Next, I will explain in detail the, custom Dataset class creation, my own custom Modal, loss functions tried and the results with time taken at various stages, .
 	
 Custom Dataloader class: 
@@ -29,123 +29,126 @@ We have timed it also. The Dataloading time is around 0.07 seconds.
 
 The algorithm goes below:
 
-bg_index = index // 4000 # each fg can hold till 4000
-    if index % 4000 != 0:
-      bg_index = bg_index + 1
+	bg_index = index // 4000 # each fg can hold till 4000
+    	if index % 4000 != 0:
+      	   bg_index = bg_index + 1
 
-    # each fg can hold till 40
-    fg_index = index // 40
-    if index % 40 != 0:
-      fg_index = fg_index + 1
-  
-    fg_index = fg_index % 100 # max cap for fg_index
-    if fg_index == 0:
-      fg_index =  100 
+        # each fg can hold till 40
+        fg_index = index // 40
+        if index % 40 != 0:
+          fg_index = fg_index + 1
 
-    file_index = index % 40
-    if file_index == 0:
-        file_index = 40 # This is 1 to 40
-    
+        fg_index = fg_index % 100 # max cap for fg_index
+        if fg_index == 0:
+          fg_index =  100 
+
+        file_index = index % 40
+        if file_index == 0:
+	  file_index = 40 # This is 1 to 40
+
 Inside the root directory below is the file structure.
-root/
-	bg1/
-		/fg_1
-			 /depth
-				1.jpg
-				.....
-				.....
-				40.jpg  
-			 /mask
-				1.jpg
-				2.jpg
-				.....
-				.....
-				40.jpg
-			 /overlay
-				1.jpg
-				2.jpg
-				.....
-				.....
-				40.jpg
-		/fg_2
+
+	root/
+		bg1/
+			/fg_1
+				 /depth
+					1.jpg
+					.....
+					.....
+					40.jpg  
+				 /mask
+					1.jpg
+					2.jpg
+					.....
+					.....
+					40.jpg
+				 /overlay
+					1.jpg
+					2.jpg
+					.....
+					.....
+					40.jpg
+			/fg_2
+				   /depth
+				   /mask_
+				   /overlay
+			 .........
+			 .........
+			 .........
+			 /fg_200/
+					/depth
+					/mask_
+					/overlay	
+		bg2/
+			/fg_1
+				/depth
+					 1.jpg
+					 .....
+					 .....
+					 40.jpg  
+				/mask_
+					1.jpg
+					.....
+					.....
+					40.jpg  
+				/overlay
+					1.jpg
+					.....
+					.....
+					40.jpg  
+			..............
+			..............
+			..............
+			 /fg_200
 			   /depth
 			   /mask_
 			   /overlay
-		 .........
-		 .........
-		 .........
-		 /fg_200/
-				/depth
-				/mask_
-				/overlay	
-	bg2/
-		/fg_1
-			/depth
-				 1.jpg
-				 .....
-				 .....
-				 40.jpg  
-			/mask_
-				1.jpg
-				.....
-				.....
-				40.jpg  
-			/overlay
-				1.jpg
-				.....
-				.....
-				40.jpg  
-		..............
-		..............
-		..............
-		 /fg_200
-		   /depth
-		   /mask_
-		   /overlay
-		
-	..................
-	..................
-	..................
-	/bg100
-		  /fg_1
-			/depth
-				 1.jpg
-				 .....
-				 .....
-				 40.jpg  
-			/mask_
-				1.jpg
-				.....
-				.....
-				40.jpg  
-			/overlay
-				1.jpg
-				.....
-				.....
-				40.jpg  
-		..............
-		..............
-		..............
-		 /fg_200
-		   /depth
-		   /mask_
-		   /overlay
-			
 
+		..................
+		..................
+		..................
+		/bg100
+			  /fg_1
+				/depth
+					 1.jpg
+					 .....
+					 .....
+					 40.jpg  
+				/mask_
+					1.jpg
+					.....
+					.....
+					40.jpg  
+				/overlay
+					1.jpg
+					.....
+					.....
+					40.jpg  
+			..............
+			..............
+			..............
+			 /fg_200
+			   /depth
+			   /mask_
+			   /overlay
+			
 Data Augmentation: I did not use any Data Augmentation for this project, as initially I am not sure what effects these will create on changes of ground truths.
+
 	I believe, I can do some data augmentation with additional brightness (adding some factor to tensor), hue, saturations. This I will try in future.
 
 Modal Creation:
 
 	Now Dataset class is ready. Lets look to the Modal. I wrote my own custom modal which basically similar to Densenet. This modal works with any image sizes.
+
 Basic modal structure looks below. We combine both input fg + fgbg which will become 6 channels. Modal takes these 6 channels as input.
 The modal has 3 maxpools, that shrinks the images to W/8,H/8 at 3rd maxpool. I followed specific channel outputs till each maxpool.
 Example,
-Till 1st Maxpool -> output channels are 64 and input channels are concats of earlier output. Maxpool is done by concatinating previous outputs. x4=maxpool(torch.cat([x2,x3],dim=1))
-Till 2nd Maxpool -> output channels are 128 and input channels are concats of earlier output. Again Maxpool is done by concatinating previous outputs. x8=maxpool(torch.cat([x5,x6,x7],dim=1))
-Till 3nd Maxpool -> output channels are 256 and input channels are concats of earlier output. Again Maxpool is done by concatinating previous outputs. x12=maxpool(torch.cat([x9,x10,x11],dim=1))
-For, x15, I have concatenated the x12 maxpool also. x15 = self.x15(torch.cat([x12,x13,x14],dim=1)) # 512 channels. From here on we go on upscaling the image size
-while ADDING the appropritae output that is just one bofore the maxpool stage.  
+
+	Till 1st Maxpool -> output channels are 64 and input channels are concats of earlier output. Maxpool is done by concatinating previous outputs. x4=maxpool(torch.cat([x2,x3],dim=1))
+	Till 2nd Maxpool -> output channels are 128 and input channels are concats of earlier output. Again Maxpool is done by concatinating previous outputs. x8=maxpool(torch.cat([x5,x6,x7],dim=1))
+	Till 3nd Maxpool -> output channels are 256 and input channels are concats of earlier output. Again Maxpool is done by concatinating previous outputs. x12=maxpool(torch.cat([x9,x10,x11],dim=1))
+	For, x15, I have concatenated the x12 maxpool also. x15 = self.x15(torch.cat([x12,x13,x14],dim=1)) # 512 channels. From here on we go on upscaling the image size
+	while ADDING the appropritae output that is just one bofore the maxpool stage.  
 
 Modal forward is shown below, with input,output. All uses 3*3 kernel otherwise mentioned in comments. maxpool uses 2*2 with stride=2.
 
@@ -201,12 +204,11 @@ Modal forward is shown below, with input,output. All uses 3*3 kernel otherwise m
 
 Loss Functions Experiments and Analysis:
 
-	Now, We have the custom Dataset handler and custom Modal in place. Our modal outputs both depth and mask images. I tried many loss functions.
-	L1(MAE), L2(MSE), SmoothL1, SSIM, Gradient, BCE. For depth MSE outperformed. For mask actually it does not matter, because we are already doing sigmoid.
-	But I would like to discuss few combinations here. What ever the combination is, I calculated many loss values and logged them to understand their change behavior.
-	Simply L1 loss has the convergence issue. It became very difficult to achive the global minima.
+Now, We have the custom Dataset handler and custom Modal in place. Our modal outputs both depth and mask images. I tried many loss functions.L1(MAE), L2(MSE), SmoothL1, SSIM, Gradient, BCE. For depth MSE outperformed. For mask actually it does not matter, 
+because we are already doing sigmoid.
+	But I would like to discuss few combinations here. What ever the combination is, I calculated many loss values and logged them to understand their change behavior. only L1 loss has the convergence issue. It became very difficult to achive the global minima.
 	
-	Trial #1: Loss = aD + bM. a and b constants and D is MSE for depth and M is MSE for mask. I do not see this as a good combination.
+Trial #1: Loss = aD + bM. a and b constants and D is MSE for depth and M is MSE for mask. I do not see this as a good combination.
 	Lets say a > b, We are punishing the convergence of mask. Actually mask has faster convergence behavior due to its black and white nature.
 	(dense32_mask_dw30_loss8_tr1.log)
 	INFO:root:Loss=0.3421425223350525 Epoch=0 Batch_id=1167  L2-D=0.010764 L2-M=0.017790 SSIM-D=0.001445 MODAL-EXEC-TIME=0.011 BACKPROP-EXEC-TIME=0.011 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.195 GRAD-D=0.024859 SMOOTH-D=0.005382 SMOOTH-L1-M=0.008895 RMSE=0.103927 Meanlog10=nan Acc_D1=0.528682 Acc_D2=0.762998 Acc_D3=0.859739
@@ -215,23 +217,23 @@ Loss Functions Experiments and Analysis:
 	INFO:root:Loss=0.282012015581131 Epoch=0 Batch_id=1170  L2-D=0.008887 L2-M=0.014239 SSIM-D=0.001173 MODAL-EXEC-TIME=0.008 BACKPROP-EXEC-TIME=0.009 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.197 GRAD-D=0.024732 SMOOTH-D=0.004443 SMOOTH-L1-M=0.007120 RMSE=0.104027 Meanlog10=nan Acc_D1=0.529635 Acc_D2=0.764413 Acc_D3=0.861320
 	INFO:root:Loss=0.2731016278266907 Epoch=0 Batch_id=1171  L2-D=0.008591 L2-M=0.014246 SSIM-D=0.001127 MODAL-EXEC-TIME=0.008 BACKPROP-EXEC-TIME=0.009 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.173 GRAD-D=0.024574 SMOOTH-D=0.004295 SMOOTH-L1-M=0.007123 RMSE=0.104027 Meanlog10=nan Acc_D1=0.529635 Acc_D2=0.764413 Acc_D3=0.861320
 	
-	We can observe above, with this combination of aD+bM (a>b), Both can not converge 100% due to the equation itself. 
-	Mask has not convereged at par with the depth due to higher weight given to depth. 
+We can observe above, with this combination of aD+bM (a>b), Both can not converge 100% due to the equation itself. 
+Mask has not convereged at par with the depth due to higher weight given to depth. 
 	
 	
-	Trial#2: Now, I would like to understand the effect of SSIM. Applied SSIM on depth. Image size 256, Loss = K(D + M + SSIM_D). K=70 is just a constant.  
-	
-	My observation is that , Even if we don't use use SSIM in the loss function, actually due to MSE loss, SSIM also has seen convergence.
- 	(256_dw70_sum_30k_lre5_15.log)
+Trial#2: Now, I would like to understand the effect of SSIM. Applied SSIM on depth. Image size 256, Loss = K(D + M + SSIM_D). K=70 is just a constant.  	
+My observation is that , Even if we don't use use SSIM in the loss function, actually due to MSE loss, SSIM also has seen convergence.
+ 	
+	(256_dw70_sum_30k_lre5_15.log)
 	INFO:root:Loss=0.5496146082878113 Epoch=0 Batch_id=1871  L2-D=0.005465 L2-M=0.001630 SSIM-D=0.000756 MODAL-EXEC-TIME=0.008 BACKPROP-EXEC-TIME=0.008 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.155 GRAD-D=0.017681 SMOOTH-D=0.002733 SMOOTH-L1-M=0.000815 RMSE=0.086486 Meanlog10=nan Acc_D1=0.696401 Acc_D2=0.854470 Acc_D3=0.905863
 	INFO:root:Loss=0.5341195464134216 Epoch=0 Batch_id=1872  L2-D=0.004071 L2-M=0.003008 SSIM-D=0.000552 MODAL-EXEC-TIME=0.008 BACKPROP-EXEC-TIME=0.008 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.155 GRAD-D=0.016819 SMOOTH-D=0.002035 SMOOTH-L1-M=0.001504 RMSE=0.086496 Meanlog10=nan Acc_D1=0.696711 Acc_D2=0.854910 Acc_D3=0.906326
 	INFO:root:Loss=0.6898210644721985 Epoch=0 Batch_id=1873  L2-D=0.005640 L2-M=0.003443 SSIM-D=0.000772 MODAL-EXEC-TIME=0.008 BACKPROP-EXEC-TIME=0.008 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.155 GRAD-D=0.016914 SMOOTH-D=0.002820 SMOOTH-L1-M=0.001721 RMSE=0.086511 Meanlog10=nan Acc_D1=0.696994 Acc_D2=0.855317 Acc_D3=0.906776
 	INFO:root:Loss=0.6279988288879395 Epoch=0 Batch_id=1874  L2-D=0.004888 L2-M=0.003419 SSIM-D=0.000665 MODAL-EXEC-TIME=0.008 BACKPROP-EXEC-TIME=0.008 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.155 GRAD-D=0.016844 SMOOTH-D=0.002444 SMOOTH-L1-M=0.001709 RMSE=0.086521 Meanlog10=nan Acc_D1=0.697304 Acc_D2=0.855762 Acc_D3=0.907248
 	
-	We can see the variation in the loss is due to depth and mask losses. SSIM always 3 decimal loss. Lets look at Smooth loss.
+We can see the variation in the loss is due to depth and mask losses. SSIM always 3 decimal loss. Lets look at Smooth loss.
 	
 	SMOOTH-D=0.002035 when depth loss L2-D=0.004071 	
-    SMOOTH-D=0.002444 when depth loss L2-D=0.004888
+    	SMOOTH-D=0.002444 when depth loss L2-D=0.004888
 	SMOOTH-D=0.002733 when depth loss L2-D=0.005465
 	SMOOTH-D=0.002820 when depth loss L2-D=0.005640
     
@@ -246,23 +248,21 @@ Loss Functions Experiments and Analysis:
 	GRAD-D=0.024732 
 	GRAD-D=0.024574
 	
-	***In one experiement did with gradient loss, I observed it is actually trying to average the gradients that is like uniformly spreading the pixels.
-	So, I decided not to use gradient loss also.
+***In one experiement did with gradient loss, I observed it is actually trying to average the gradients that is like uniformly spreading the pixels. So, I decided not to use gradient loss also.
 	
-	Trial#3: So, I removed the SSIM and Smooth Loss. Now the loss function became Loss = K(L2_Depth + L2_Mask). L2 = MSE.	
+Trial#3: So, I removed the SSIM and Smooth Loss. Now the loss function became Loss = K(L2_Depth + L2_Mask). L2 = MSE.	
 	Example, This log is the output of K(L2_Depth + L2_Mask). K is 70 used for initial loss convergence. This is very equalent to we give equal weights to both mask and depth.
-	 With 100k samples,
-	(verygood_dw70_sum_100k_lre5_10.log) 
+	 
+	 With 100k samples,(verygood_dw70_sum_100k_lre5_10.log) 
 	INFO:root:Loss=0.5529605150222778 Epoch=0 Batch_id=1558  L2-D=0.005579 L2-M=0.001584 SSIM-D=0.000736 MODAL-EXEC-TIME=0.010 BACKPROP-EXEC-TIME=0.018 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.155 GRAD-D=0.024652 SMOOTH-D=0.002790 SMOOTH-L1-M=0.000792 RMSE=0.079838 Meanlog10=nan Acc_D1=0.394439 Acc_D2=0.547774 Acc_D3=0.620838
 	INFO:root:Loss=0.6402487754821777 Epoch=0 Batch_id=1559  L2-D=0.006424 L2-M=0.001872 SSIM-D=0.000851 MODAL-EXEC-TIME=0.014 BACKPROP-EXEC-TIME=0.012 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.152 GRAD-D=0.026086 SMOOTH-D=0.003212 SMOOTH-L1-M=0.000936 RMSE=0.079838 Meanlog10=nan Acc_D1=0.394439 Acc_D2=0.547774 Acc_D3=0.620838
 	INFO:root:Loss=0.561633825302124 Epoch=0 Batch_id=1560  L2-D=0.005637 L2-M=0.001635 SSIM-D=0.000751 MODAL-EXEC-TIME=0.009 BACKPROP-EXEC-TIME=0.010 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.157 GRAD-D=0.024538 SMOOTH-D=0.002818 SMOOTH-L1-M=0.000818 RMSE=0.079838 Meanlog10=nan Acc_D1=0.394439 Acc_D2=0.547774 Acc_D3=0.620838
 	INFO:root:Loss=0.5946778655052185 Epoch=0 Batch_id=1561  L2-D=0.005760 L2-M=0.001976 SSIM-D=0.000759 MODAL-EXEC-TIME=0.008 BACKPROP-EXEC-TIME=0.009 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.159 GRAD-D=0.025065 SMOOTH-D=0.002880 SMOOTH-L1-M=0.000988 RMSE=0.079838 Meanlog10=nan Acc_D1=0.394439 Acc_D2=0.547774 Acc_D3=0.620838
 	INFO:root:Loss=0.9416714906692505 Epoch=0 Batch_id=1562  L2-D=0.007948 L2-M=0.004446 SSIM-D=0.001059 MODAL-EXEC-TIME=0.009 BACKPROP-EXEC-TIME=0.009 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.076 GRAD-D=0.027045 SMOOTH-D=0.003974 SMOOTH-L1-M=0.002223 RMSE=0.079838 Meanlog10=nan Acc_D1=0.394439 Acc_D2=0.547774 Acc_D3=0.620838
 	
-	Not much of a difference in converence pattern between Trial#2 and Trial#3. It shows MSE for both depth and mask is doing good due to equal weights.
-	I observed the output of the mask quality is very good.
+Not much of a difference in converence pattern between Trial#2 and Trial#3. It shows MSE for both depth and mask is doing good due to equal weights. I observed the output of the mask quality is very good.
 	
-	Trial#4: I replaced the MSE for mask with BCE for mask. Loss = K(L2_depth + BCE_Mask)
+Trial#4: I replaced the MSE for mask with BCE for mask. Loss = K(L2_depth + BCE_Mask)
 	
 	(bce_no_ml2_nodssim_256_dw70_sum_100k_lre4_20.log)	
 	INFO:root:Loss=1.877028465270996 Epoch=0 Batch_id=6244  L2-D=0.008568 L2-M=0.002378 BCE-M=0.018247 SSIM-D=0.001217 MODAL-EXEC-TIME=0.006 BACKPROP-EXEC-TIME=0.005 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.156 GRAD-D=0.014723 SMOOTH-D=0.004284 SMOOTH-L1-M=0.001189 RMSE=0.257441 Meanlog10=nan Acc_D1=0.228618 Acc_D2=0.404446 Acc_D3=0.547375
@@ -272,7 +272,7 @@ Loss Functions Experiments and Analysis:
 	INFO:root:Loss=1.8382396697998047 Epoch=0 Batch_id=6248  L2-D=0.007530 L2-M=0.002196 BCE-M=0.018730 SSIM-D=0.001051 MODAL-EXEC-TIME=0.006 BACKPROP-EXEC-TIME=0.005 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.156 GRAD-D=0.013767 SMOOTH-D=0.003765 SMOOTH-L1-M=0.001098 RMSE=0.257556 Meanlog10=nan Acc_D1=0.228725 Acc_D2=0.404627 Acc_D3=0.547619
 	INFO:root:Loss=1.5033087730407715 Epoch=0 Batch_id=6249  L2-D=0.006372 L2-M=0.001553 BCE-M=0.015103 SSIM-D=0.000897 MODAL-EXEC-TIME=0.005 BACKPROP-EXEC-TIME=0.005 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.157 GRAD-D=0.013098 SMOOTH-D=0.003186 SMOOTH-L1-M=0.000776 RMSE=0.257570 Meanlog10=nan Acc_D1=0.228770 Acc_D2=0.404714 Acc_D3=0.547733
 
-	BCE is dancing according to MSE of mask. But seems for mask it does not matter wheather we use BCE or MSE, both are doing good.
+BCE is dancing according to MSE of mask. But seems for mask it does not matter wheather we use BCE or MSE, both are doing good.
 	
 	
 Training Strategy:	
@@ -296,67 +296,79 @@ IMAGE SIZE VS BATCH SIZE RECOMMONDED:
 So, I followed one strategy -> Understand the loss functions quickly by experimenting with 32*32 size and apply the resulted weights on bigger images and retrain for few epochs.
 It is similar to transfer learning. loaded zip into colab vm as reading from drive is time taking.
 So, with 32*32 size, I could able to try out all combinations of losses and their behavior as mentioned in earlier section.
-In this case, the output also is 32*32 but , I then interpolate to 64*64 size and sent to the loss function and backprop. With this approach, it was
-fast, but looks few spatial features compromised. We can see the roundedness of interpolation effect in masks. And brightness of the depth is also
-not that good. Tried to subtract the bright ness (-0.005) before sending to loss, but that actually is whitening the image , nothing more. 
+In this case, the output also is 32*32 but , I then interpolate to 64*64 size and sent to the loss function and backprop. With this approach, it was fast, but looks few spatial features compromised. We can see the roundedness of interpolation effect in masks. And brightness of the depth is also not that good. Tried to subtract the bright ness (-0.005) before sending to loss, but that actually is whitening the image , nothing more. 
 
 	So, I would like to understand the impact of input size, so tried with 64*64 as input size and the output as 64*64 but interpolate to 128*128) and send to loss function.
 	-> This has good predictability and better image quality on fore ground. First checked on 10000 images and latter applied for whole dataset.
 	
-128 Again, this time input was 128*128 output 128*128 and NO MORE interpolation, directly send the output to loss and backprop. 
+This time input was 128*128 output 128*128 and NO MORE interpolation, directly send the output to loss and backprop. 
 The same weights we got from initial 64 image we applied here, and the results are good and improved without training. But on random testing, still it required few epochs training.
+
 Now we trained the above weights on sample of 10000 images for 1 epoch. I checked the image quality, It is super clear and outperformed the ground truth.
+
 Now perfomed in test samples. Sometimes, my model seems outperformed the ground truths in depicting the foreground objects.
 Now ran one more epoch on 30000 samples. This time I observed, loss started decreasing. Due to homogenity of either black or white, mask quickly shows reduction 
+
 in its loss. But Depth across many images, every pixel has diffferent intensity. So, Earlier it used to stop at 0.01 and MSE loss did not converge, but with increased 
 initial image size to 128*128, now the loss convergence is around 0.007. 
-	Conclusion in these test. is that when we tried with small size, whiteness of the image is lost and rounded ness appeared
-due to interpolation. When the input size = size used for loss calculation, roundeness issue disappeared.
 
-128*128 input, With 100k training samples, Different losses & times at convergence: lr = e-05 Loss = K(Depth-MSE + Mask-MSE + Depth_SSIM ).
-L2-D=0.003739 L2-M=0.003631 SSIM-D=0.000475 MODAL-EXEC-TIME=0.006 BACKPROP-EXEC-TIME=0.006 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.121 GRAD-D=0.022899 SMOOTH-D=0.001869 SMOOTH-L1-M=0.001816 RMSE=0.097306 Meanlog10=nan Acc_D1=0.642869 Acc_D2=0.812467 Acc_D3=0.875512
-L2-D=0.003739 L2-M=0.003631 SSIM-D=0.000475 MODAL-EXEC-TIME=0.009 BACKPROP-EXEC-TIME=0.010 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.119 GRAD-D=0.022899 SMOOTH-D=0.001870 SMOOTH-L1-M=0.001816 RMSE=0.097306 Meanlog10=nan Acc_D1=0.642861 Acc_D2=0.812471 Acc_D3=0.875517
-Increased the sample size to 100k. Trained for 1 epoch. Background shows good improvement
-L2-D=0.008466 L2-M=0.004555 SSIM-D=0.001136 MODAL-EXEC-TIME=0.009 BACKPROP-EXEC-TIME=0.010 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.077 GRAD-D=0.026557 SMOOTH-D=0.004233 SMOOTH-L1-M=0.002278 RMSE=0.084072 Meanlog10=nan Acc_D1=0.377704 Acc_D2=0.528144 Acc_D3=0.604948:
-L2-D=0.008146 L2-M=0.004495 SSIM-D=0.001089 MODAL-EXEC-TIME=0.008 BACKPROP-EXEC-TIME=0.010 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.078 GRAD-D=0.026855 SMOOTH-D=0.004073 SMOOTH-L1-M=0.002248 RMSE=0.081618 Meanlog10=nan Acc_D1=0.381430 Acc_D2=0.537099 Acc_D3=0.613397:   0%|          | 0/1563 [25:32<?, ?it/s]
-L2-D=0.007948 L2-M=0.004446 SSIM-D=0.001059 MODAL-EXEC-TIME=0.009 BACKPROP-EXEC-TIME=0.009 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.076 GRAD-D=0.027045 SMOOTH-D=0.003974 SMOOTH-L1-M=0.002223 RMSE=0.079838 Meanlog10=nan Acc_D1=0.394439 Acc_D2=0.547774 Acc_D3=0.620838:   0%|          | 0/1563 [25:24<?, ?it/s]
+	Conclusion in these test. is that when we tried with small size, whiteness of the image is lost and rounded ness appeared due to interpolation. When the input size = size used for loss calculation, roundeness issue disappeared.
+
+128*128 input, With 100k training samples, Different losses & times at convergence: lr = e-05 Loss = K(Depth-MSE + Mask-MSE + Depth_SSIM).
+	
+	L2-D=0.003739 L2-M=0.003631 SSIM-D=0.000475 MODAL-EXEC-TIME=0.006 BACKPROP-EXEC-TIME=0.006 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.121 GRAD-D=0.022899 SMOOTH-D=0.001869 SMOOTH-L1-M=0.001816 RMSE=0.097306 Meanlog10=nan Acc_D1=0.642869 Acc_D2=0.812467 Acc_D3=0.875512
+		L2-D=0.003739 L2-M=0.003631 SSIM-D=0.000475 MODAL-EXEC-TIME=0.009 BACKPROP-EXEC-TIME=0.010 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.119 GRAD-D=0.022899 SMOOTH-D=0.001870 SMOOTH-L1-M=0.001816 RMSE=0.097306 Meanlog10=nan Acc_D1=0.642861 Acc_D2=0.812471 Acc_D3=0.875517
+		Increased the sample size to 100k. Trained for 1 epoch. Background shows good improvement
+		L2-D=0.008466 L2-M=0.004555 SSIM-D=0.001136 MODAL-EXEC-TIME=0.009 BACKPROP-EXEC-TIME=0.010 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.077 GRAD-D=0.026557 SMOOTH-D=0.004233 SMOOTH-L1-M=0.002278 RMSE=0.084072 Meanlog10=nan Acc_D1=0.377704 Acc_D2=0.528144 Acc_D3=0.604948:
+		L2-D=0.008146 L2-M=0.004495 SSIM-D=0.001089 MODAL-EXEC-TIME=0.008 BACKPROP-EXEC-TIME=0.010 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.078 GRAD-D=0.026855 SMOOTH-D=0.004073 SMOOTH-L1-M=0.002248 RMSE=0.081618 Meanlog10=nan Acc_D1=0.381430 Acc_D2=0.537099 Acc_D3=0.613397:   0%|          | 0/1563 [25:32<?, ?it/s]
+		L2-D=0.007948 L2-M=0.004446 SSIM-D=0.001059 MODAL-EXEC-TIME=0.009 BACKPROP-EXEC-TIME=0.009 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.076 GRAD-D=0.027045 SMOOTH-D=0.003974 SMOOTH-L1-M=0.002223 RMSE=0.079838 Meanlog10=nan Acc_D1=0.394439 Acc_D2=0.547774 Acc_D3=0.620838:   0%|          | 0/1563 [25:24<?, ?it/s]
+
 We observed , sharp identification of background edges.
 
 128*128 input, With 200k training samples, lr - e-05. Loss = K(Depth-MSE + Mask-MSE + Depth_SSIM.
-L2-D=0.005239 L2-M=0.002627 SSIM-D=0.000660 MODAL-EXEC-TIME=0.011 BACKPROP-EXEC-TIME=0.009 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.155 GRAD-D=0.024337 SMOOTH-D=0.002619 SMOOTH-L1-M=0.001314 RMSE=0.097605 Meanlog10=nan Acc_D1=0.537048 Acc_D2=0.757224 Acc_D3=0.852888:
-L2-D=0.004989 L2-M=0.002641 SSIM-D=0.000626 MODAL-EXEC-TIME=0.008 BACKPROP-EXEC-TIME=0.009 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.158 GRAD-D=0.024597 SMOOTH-D=0.002494 SMOOTH-L1-M=0.001321 RMSE=0.093947 Meanlog10=nan Acc_D1=0.549465 Acc_D2=0.768925 Acc_D3=0.861968:
-L2-D=0.004856 L2-M=0.002629 SSIM-D=0.000608 MODAL-EXEC-TIME=0.009 BACKPROP-EXEC-TIME=0.012 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.156 GRAD-D=0.024753 SMOOTH-D=0.002428 SMOOTH-L1-M=0.001314 RMSE=0.091208 Meanlog10=nan Acc_D1=0.565269 Acc_D2=0.780983 Acc_D3=0.870636:
+
+	L2-D=0.005239 L2-M=0.002627 SSIM-D=0.000660 MODAL-EXEC-TIME=0.011 BACKPROP-EXEC-TIME=0.009 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.155 GRAD-D=0.024337 SMOOTH-D=0.002619 SMOOTH-L1-M=0.001314 RMSE=0.097605 Meanlog10=nan Acc_D1=0.537048 Acc_D2=0.757224 Acc_D3=0.852888:
+		L2-D=0.004989 L2-M=0.002641 SSIM-D=0.000626 MODAL-EXEC-TIME=0.008 BACKPROP-EXEC-TIME=0.009 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.158 GRAD-D=0.024597 SMOOTH-D=0.002494 SMOOTH-L1-M=0.001321 RMSE=0.093947 Meanlog10=nan Acc_D1=0.549465 Acc_D2=0.768925 Acc_D3=0.861968:
+		L2-D=0.004856 L2-M=0.002629 SSIM-D=0.000608 MODAL-EXEC-TIME=0.009 BACKPROP-EXEC-TIME=0.012 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.156 GRAD-D=0.024753 SMOOTH-D=0.002428 SMOOTH-L1-M=0.001314 RMSE=0.091208 Meanlog10=nan Acc_D1=0.565269 Acc_D2=0.780983 Acc_D3=0.870636:
+
 The background white increased.We are able to see clarity in depth.
 
 So, Finally, I tried with 256*256, loss calculation with 256*256, Loss = K(L2_Depth + L2_Mask), K = 10, 20, 30 and 70 in various trials. 
 Naturally depth loss start increasing epoch by epoch. Now I start seeing sharp background objects depth also. They start appearing.
+
 	Conclusion By these trials: So INCREASED IMAGE INPUT SIZE ACTUALLY PREDICTED BACKGROUND OBJECTS MORE WHICH ARE IMPORTANT FOR DEPTH CALCULATION.
 
 256*256 input, 30k training samples. REDUCED THE BATCH SIZE TO 16. Loss = K(Depth-MSE + Mask-MSE + Depth_SSIM)
+
 L2-D=0.005351 L2-M=0.003557 SSIM-D=0.000727 MODAL-EXEC-TIME=0.008 BACKPROP-EXEC-TIME=0.009 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.155 GRAD-D=0.017597 SMOOTH-D=0.002676 SMOOTH-L1-M=0.001778 RMSE=0.098037 Meanlog10=nan Acc_D1=0.657427 Acc_D2=0.833152 Acc_D3=0.893974:
-L2-D=0.005074 L2-M=0.003510 SSIM-D=0.000689 MODAL-EXEC-TIME=0.007 BACKPROP-EXEC-TIME=0.008 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.155 GRAD-D=0.017226 SMOOTH-D=0.002537 SMOOTH-L1-M=0.001755 RMSE=0.090943 Meanlog10=nan Acc_D1=0.678247 Acc_D2=0.845829 Acc_D3=0.901804:
-L2-D=0.004956 L2-M=0.003466 SSIM-D=0.000673 MODAL-EXEC-TIME=0.008 BACKPROP-EXEC-TIME=0.009 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.155 GRAD-D=0.016984 SMOOTH-D=0.002478 SMOOTH-L1-M=0.001733 RMSE=0.088309 Meanlog10=nan Acc_D1=0.688958 Acc_D2=0.851394 Acc_D3=0.904802:
-L2-D=0.004888 L2-M=0.003419 SSIM-D=0.000665 MODAL-EXEC-TIME=0.008 BACKPROP-EXEC-TIME=0.008 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.155 GRAD-D=0.016844 SMOOTH-D=0.002444 SMOOTH-L1-M=0.001709 RMSE=0.086521 Meanlog10=nan Acc_D1=0.697304 Acc_D2=0.855762 Acc_D3=0.907248:
+	L2-D=0.005074 L2-M=0.003510 SSIM-D=0.000689 MODAL-EXEC-TIME=0.007 BACKPROP-EXEC-TIME=0.008 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.155 GRAD-D=0.017226 SMOOTH-D=0.002537 SMOOTH-L1-M=0.001755 RMSE=0.090943 Meanlog10=nan Acc_D1=0.678247 Acc_D2=0.845829 Acc_D3=0.901804:
+	L2-D=0.004956 L2-M=0.003466 SSIM-D=0.000673 MODAL-EXEC-TIME=0.008 BACKPROP-EXEC-TIME=0.009 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.155 GRAD-D=0.016984 SMOOTH-D=0.002478 SMOOTH-L1-M=0.001733 RMSE=0.088309 Meanlog10=nan Acc_D1=0.688958 Acc_D2=0.851394 Acc_D3=0.904802:
+	L2-D=0.004888 L2-M=0.003419 SSIM-D=0.000665 MODAL-EXEC-TIME=0.008 BACKPROP-EXEC-TIME=0.008 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.155 GRAD-D=0.016844 SMOOTH-D=0.002444 SMOOTH-L1-M=0.001709 RMSE=0.086521 Meanlog10=nan Acc_D1=0.697304 Acc_D2=0.855762 Acc_D3=0.907248:
 
 The above is a good convergence.
+
 Now as another experiement, I added BCE loss also for mask. Loss = K(Depth-MSE + Mask-MSE + Depth_SSIM + MASK_BCE).
-L2-D=0.004944 L2-M=0.002657 SSIM-D=0.000672 MODAL-EXEC-TIME=0.008 BACKPROP-EXEC-TIME=0.009 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.155 GRAD-D=0.016993 SMOOTH-D=0.002472 SMOOTH-L1-M=0.001329 RMSE=0.086277 Meanlog10=nan Acc_D1=0.696232 Acc_D2=0.858464 Acc_D3=0.909742: 
-L2-D=0.004911 L2-M=0.002531 BCE-M=0.018495 SSIM-D=0.000669 MODAL-EXEC-TIME=0.006 BACKPROP-EXEC-TIME=0.009 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.156 GRAD-D=0.016789 SMOOTH-D=0.002456 SMOOTH-L1-M=0.001266 RMSE=0.085526 Meanlog10=nan Acc_D1=0.701390 Acc_D2=0.860296 Acc_D3=0.910286:
+
+	L2-D=0.004944 L2-M=0.002657 SSIM-D=0.000672 MODAL-EXEC-TIME=0.008 BACKPROP-EXEC-TIME=0.009 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.155 GRAD-D=0.016993 SMOOTH-D=0.002472 SMOOTH-L1-M=0.001329 RMSE=0.086277 Meanlog10=nan Acc_D1=0.696232 Acc_D2=0.858464 Acc_D3=0.909742: 
+		L2-D=0.004911 L2-M=0.002531 BCE-M=0.018495 SSIM-D=0.000669 MODAL-EXEC-TIME=0.006 BACKPROP-EXEC-TIME=0.009 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.156 GRAD-D=0.016789 SMOOTH-D=0.002456 SMOOTH-L1-M=0.001266 RMSE=0.085526 Meanlog10=nan Acc_D1=0.701390 Acc_D2=0.860296 Acc_D3=0.910286:
 
 Now removed L2_Mask. Will see how other losses converge?. Now loss = K(D_L2 + M_BCE + SSIM-D)
-L2-D=0.004893 L2-M=0.002537 BCE-M=0.018170 SSIM-D=0.000667 MODAL-EXEC-TIME=0.006 BACKPROP-EXEC-TIME=0.007 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.157 GRAD-D=0.016626 SMOOTH-D=0.002447 SMOOTH-L1-M=0.001268 RMSE=0.084866 Meanlog10=nan Acc_D1=0.705272 Acc_D2=0.861931 Acc_D3=0.911125: 
-Again Mask is pixel perfect.
-Now , we will make shuffle = true and removed SSIM-D. Now Loss = K(D_L2 + M_BCE). But we still watch what happens to other loss values..
-L2-D=0.006709 L2-M=0.001982 BCE-M=0.016659 SSIM-D=0.000940 MODAL-EXEC-TIME=0.006 BACKPROP-EXEC-TIME=0.005 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.156 GRAD-D=0.015992 SMOOTH-D=0.003354 SMOOTH-L1-M=0.000991 RMSE=0.187009 Meanlog10=nan Acc_D1=0.420672 Acc_D2=0.639257 Acc_D3=0.771012:
-You see, L2 Mask has reduced, though it is not part of loss back prop. We can see Mask are pixel predicted and depth has improvement.
-Now we will increase the lr to e-04, as BCE still hovers around. Lets see if we can have quick convergence with BCE. 
-L2-D=0.006843 L2-M=0.001839 BCE-M=0.016846 SSIM-D=0.000947 MODAL-EXEC-TIME=0.005 BACKPROP-EXEC-TIME=0.006 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.157 GRAD-D=0.014221 SMOOTH-D=0.003422 SMOOTH-L1-M=0.000919 RMSE=0.181703 Meanlog10=nan Acc_D1=0.370108 Acc_D2=0.562902 Acc_D3=0.677281: 
-We had good improvement in the depth.
-Now Lets increase the sample size to 100k . We had experience of good depth prediction after inreasing the sample size from 30k to 100k. 
-L2-D=0.007237 L2-M=0.001173 BCE-M=0.013984 SSIM-D=0.001036 MODAL-EXEC-TIME=0.006 BACKPROP-EXEC-TIME=0.007 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.156 GRAD-D=0.013809 SMOOTH-D=0.003618 SMOOTH-L1-M=0.000586 RMSE=0.258638 Meanlog10=nan Acc_D1=0.228543 Acc_D2=0.401711 Acc_D3=0.542491:
 
-Next, we will train on 100k dataset. This should give good improvement in depths.
-Every time we increase the resolution, we observed the initial epochs shows depth is not well developed. masks are ok. This is good sign because, There is more to learning
+	L2-D=0.004893 L2-M=0.002537 BCE-M=0.018170 SSIM-D=0.000667 MODAL-EXEC-TIME=0.006 BACKPROP-EXEC-TIME=0.007 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.157 GRAD-D=0.016626 SMOOTH-D=0.002447 SMOOTH-L1-M=0.001268 RMSE=0.084866 Meanlog10=nan Acc_D1=0.705272 Acc_D2=0.861931 Acc_D3=0.911125: 
+	Again Mask is pixel perfect.
+	Now , we will make shuffle = true and removed SSIM-D. Now Loss = K(D_L2 + M_BCE). But we still watch what happens to other loss values..
+	L2-D=0.006709 L2-M=0.001982 BCE-M=0.016659 SSIM-D=0.000940 MODAL-EXEC-TIME=0.006 BACKPROP-EXEC-TIME=0.005 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.156 GRAD-D=0.015992 SMOOTH-D=0.003354 SMOOTH-L1-M=0.000991 RMSE=0.187009 Meanlog10=nan Acc_D1=0.420672 Acc_D2=0.639257 Acc_D3=0.771012:
+	You see, L2 Mask has reduced, though it is not part of loss back prop. We can see Mask are pixel predicted and depth has improvement.
+	Now we will increase the lr to e-04, as BCE still hovers around. Lets see if we can have quick convergence with BCE. 
+	L2-D=0.006843 L2-M=0.001839 BCE-M=0.016846 SSIM-D=0.000947 MODAL-EXEC-TIME=0.005 BACKPROP-EXEC-TIME=0.006 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.157 GRAD-D=0.014221 SMOOTH-D=0.003422 SMOOTH-L1-M=0.000919 RMSE=0.181703 Meanlog10=nan Acc_D1=0.370108 Acc_D2=0.562902 Acc_D3=0.677281: 
+
+We had good improvement in the depth.
+
+Now Lets increase the sample size to 100k . We had experience of good depth prediction after inreasing the sample size from 30k to 100k. 
+
+	L2-D=0.007237 L2-M=0.001173 BCE-M=0.013984 SSIM-D=0.001036 MODAL-EXEC-TIME=0.006 BACKPROP-EXEC-TIME=0.007 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.156 GRAD-D=0.013809 SMOOTH-D=0.003618 SMOOTH-L1-M=0.000586 RMSE=0.258638 Meanlog10=nan Acc_D1=0.228543 Acc_D2=0.401711 Acc_D3=0.542491:
+
+Next, we will train on 100k dataset. This should give good improvement in depths. Every time we increase the resolution, we observed the initial epochs shows depth is not well developed. masks are ok. This is good sign because, There is more to learning
 for the bigger resolution on top of transfered weights, which can give fine depths in subsequent epochs. It is slowly increasing its background prediction capability.
 Mask is perfect almost.
 
