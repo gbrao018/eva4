@@ -210,6 +210,7 @@ because we are already doing sigmoid.
 	
 Trial #1: Loss = aD + bM. a and b constants and D is MSE for depth and M is MSE for mask. I do not see this as a good combination.
 	Lets say a > b, We are punishing the convergence of mask. Actually mask has faster convergence behavior due to its black and white nature.
+	
 	(dense32_mask_dw30_loss8_tr1.log)
 	INFO:root:Loss=0.3421425223350525 Epoch=0 Batch_id=1167  L2-D=0.010764 L2-M=0.017790 SSIM-D=0.001445 MODAL-EXEC-TIME=0.011 BACKPROP-EXEC-TIME=0.011 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.195 GRAD-D=0.024859 SMOOTH-D=0.005382 SMOOTH-L1-M=0.008895 RMSE=0.103927 Meanlog10=nan Acc_D1=0.528682 Acc_D2=0.762998 Acc_D3=0.859739
 	INFO:root:Loss=0.3681124448776245 Epoch=0 Batch_id=1168  L2-D=0.011715 L2-M=0.015081 SSIM-D=0.001575 MODAL-EXEC-TIME=0.011 BACKPROP-EXEC-TIME=0.010 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.195 GRAD-D=0.025249 SMOOTH-D=0.005858 SMOOTH-L1-M=0.007540 RMSE=0.103981 Meanlog10=nan Acc_D1=0.529125 Acc_D2=0.763691 Acc_D3=0.860523
