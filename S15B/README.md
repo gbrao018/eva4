@@ -301,13 +301,25 @@ It is similar to transfer learning. loaded zip into colab vm as reading from dri
 So, with 32*32 size, I could able to try out all combinations of losses and their behavior as mentioned in earlier section.
 In this case, the output also is 32*32 but , I then interpolate to 64*64 size and sent to the loss function and backprop. With this approach, it was fast, but looks few spatial features compromised. We can see the roundedness of interpolation effect in masks. And brightness of the depth is also not that good. Tried to subtract the bright ness (-0.005) before sending to loss, but that actually is whitening the image , nothing more. 
 
-	So, I would like to understand the impact of input size, so tried with 64*64 as input size and the output as 64*64 but interpolate to 128*128) and send to loss function.
+Interpolation effect (Observed roundedness with 32*32 input size and interpolated to 64*64):
+
+![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/interpolation-effect.jpg)
+
+
+2. So, I would like to understand the impact of input size, so tried with 64*64 as input size and the output as 64*64 but interpolate to 128*128) and send to loss function.
 	-> This has good predictability and better image quality on fore ground. First checked on 10000 images and latter applied for whole dataset.
 	
 This time input was 128*128 output 128*128 and NO MORE interpolation, directly send the output to loss and backprop. 
 The same weights we got from initial 64 image we applied here, and the results are good and improved without training. But on random testing, still it required few epochs training.
 
+weights got from 64*64 applied on 128*128:
+![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/64weights_128_image.jpg)
+
 Now we trained the above weights on sample of 10000 images for 1 epoch. I checked the image quality, It is super clear and outperformed the ground truth.
+
+After 1 epoch training with transfered weights.
+![image] https://github.com/gbrao018/eva4/blob/master/S15B/logs/64weights_128_image_with1epoch_transfertraining.jpg
+
 
 Now perfomed in test samples. Sometimes, my model seems outperformed the ground truths in depicting the foreground objects.
 Now ran one more epoch on 30000 samples. This time I observed, loss started decreasing. Due to homogenity of either black or white, mask quickly shows reduction 
@@ -315,7 +327,9 @@ Now ran one more epoch on 30000 samples. This time I observed, loss started decr
 in its loss. But Depth across many images, every pixel has diffferent intensity. So, Earlier it used to stop at 0.01 and MSE loss did not converge, but with increased 
 initial image size to 128*128, now the loss convergence is around 0.007. 
 
-	Conclusion in these test. is that when we tried with small size, whiteness of the image is lost and rounded ness appeared due to interpolation. When the input size = size used for loss calculation, roundeness issue disappeared.
+
+	Conclusion in these test. is that when we tried with small size, whiteness of the image is lost and rounded ness appeared due to interpolation. When the input size = size (minimum 64*64) used for loss calculation, roundeness issue disappeared.
+
 
 128*128 input, With 100k training samples, Different losses & times at convergence: lr = e-05 Loss = K(Depth-MSE + Mask-MSE + Depth_SSIM).
 	
@@ -377,4 +391,3 @@ Mask is perfect almost.
 
 output Images:
 ![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/show.png)
-
