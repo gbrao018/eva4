@@ -1,4 +1,5 @@
-Project Scope Description: 
+#Project Scope Description: 
+
 	We are  going to solve the multi objective training as a supervised learning problem. 
 	In short, it is Monocular depth estimation and mask detection. My journey through this challenge has been detailed out below.  
 
@@ -7,19 +8,19 @@ depth map for the overlayed image and mask for the foreground image.
 
 	To recap, We created the bg, fg, fgbg and corresponding ground truth depth and mask images in 15A (Please look for the README.md of 15A for dataset preperation strategy). 
 
-I put things under 6 sections.
+##I put things under 6 sections.
 
-SECTION#1: My Initial Thoughts
+##SECTION#1: My Initial Thoughts
 
-SECTION#2: Custom Dataset class and index based strategy.
+##SECTION#2: Custom Dataset class and index based strategy.
 
-SECTION#3: Modal Creation
+##SECTION#3: Modal Creation
 
-SECTION#4: Training Strategy (This section will be interesting with results shown with images)
+##SECTION#4: Training Strategy (This section will be interesting with results shown with images)
 
-SECTION#5: Experiments with Losses and Analysis (Important, but might be boring to read)
+##SECTION#5: Experiments with Losses and Analysis (Important, but might be boring to read)
 
-SECTION#1: My Initial Thoughts
+##SECTION#1: My Initial Thoughts
 
 Many thoughts came into mind. Creating a modal is one thing, but running the modal and verifying its accuracy on 
 huge dataset of 4 lac is another challenge. I devided the total 4 lac samples in to 3 lac for training, and 1 lac for test. 
