@@ -1,41 +1,38 @@
-#Project Scope Description: 
+# Project Scope Description: 
 
 	We are  going to solve the multi objective training as a supervised learning problem. 
 	In short, it is Monocular depth estimation and mask detection. My journey through this challenge has been detailed out below.  
 
-What are we going to predict?. Given a background image and a overlayed image (foreground placed on the given background), we are going to predict the 
-depth map for the overlayed image and mask for the foreground image.
+What are we going to predict?. Given a background image and a overlayed image (foreground placed on the given background), we are going to predict the  depth map for the overlayed image and mask for the foreground image.
 
 	To recap, We created the bg, fg, fgbg and corresponding ground truth depth and mask images in 15A (Please look for the README.md of 15A for dataset preperation strategy). 
 
-##I put things under 6 sections.
+I put things under 6 sections.
 
-##SECTION#1: My Initial Thoughts
+## SECTION#1: My Initial Thoughts
 
-##SECTION#2: Custom Dataset class and index based strategy.
+## SECTION#2: Custom Dataset class and index based strategy.
 
-##SECTION#3: Modal Creation
+## SECTION#3: Modal Creation
 
-##SECTION#4: Training Strategy (This section will be interesting with results shown with images)
+## SECTION#4: Training Strategy (This section will be interesting with results shown with images)
 
-##SECTION#5: Experiments with Losses and Analysis (Important, but might be boring to read)
+## SECTION#5: Experiments with Losses and Analysis (Important, but might be boring to read)
 
-##SECTION#1: My Initial Thoughts
+## SECTION#1: My Initial Thoughts
 
 Many thoughts came into mind. Creating a modal is one thing, but running the modal and verifying its accuracy on 
 huge dataset of 4 lac is another challenge. I devided the total 4 lac samples in to 3 lac for training, and 1 lac for test. 
-
-	With Image size is 224*224, colab can take a batch size of 16, anything ,more than that it throws "Cuda out of Memory" error. With 16 batch size, total batches= 300000/16 = 18750 for one epoch. 
+	
+	Now I have 3 lac data for training. With Image size is 224*224, colab can take a batch size of 16, anything ,more than that it throws "Cuda out of Memory" error. So, with 16 batch size, total batches per epoch= 300000/16 = 18750. 
+	
 	As per the observation, 1 batch takes, 1.4 second time, and the whole 18750 batches takes almost 7.3 hrs. My first task is to understand whether modal is working or not and to understand different loss functions.
 	
 	So, I did reduce the image size to 32*32, so that I can use batch size of 1024 in colab. This worked. With this we only have to run 293 batches which will take less than 7 minutes for the whole 300k training dataset.
 	
-Next, I will explain in detail the, custom Dataset class creation, my own custom Modal, loss functions tried and the results with time taken at various stages.
+## SECTION#2: Custom Dataset class and index based strategy.
 
-SECTION#2: Custom Dataset class and index based strategy.
-
-Custom Dataloader class: 
-	I created a custom Dataset class which takes input -> root, size, test = False, start= 1,  transform=ToTensor())
+I created a custom Dataset class which takes input -> root, size, test = False, start= 1,  transform=ToTensor())
 root -> path for the Dataset directory. The same class is used for both training and testing. while training test =  False, else True. 
 
 if test == True:
@@ -153,7 +150,7 @@ Data Augmentation: I did not use any Data Augmentation for this project, as init
 
 	I believe, I can do some data augmentation with additional brightness (adding some factor to tensor), hue, saturations. This I will try in future.
 
-SECTION#3: Modal Creation
+## SECTION#3: Modal Creation
 
 	Now Dataset class is ready. Lets look to the Modal. I wrote my own custom modal which basically similar to Densenet. This modal works with any image sizes.
 
@@ -162,9 +159,13 @@ The modal has 3 maxpools, that shrinks the images to W/8,H/8 at 3rd maxpool. I f
 Example,
 
 	Till 1st Maxpool -> output channels are 64 and input channels are concats of earlier output. Maxpool is done by concatinating previous outputs. x4=maxpool(torch.cat([x2,x3],dim=1))
+	
 	Till 2nd Maxpool -> output channels are 128 and input channels are concats of earlier output. Again Maxpool is done by concatinating previous outputs. x8=maxpool(torch.cat([x5,x6,x7],dim=1))
+	
 	Till 3nd Maxpool -> output channels are 256 and input channels are concats of earlier output. Again Maxpool is done by concatinating previous outputs. x12=maxpool(torch.cat([x9,x10,x11],dim=1))
+	
 	For, x15, I have concatenated the x12 maxpool also. x15 = self.x15(torch.cat([x12,x13,x14],dim=1)) # 512 channels. From here on we go on upscaling the image size
+	
 	while ADDING the appropriate output that is just one bofore the maxpool stage.  
 
 Modal forward is shown below, with input,output. All uses 3,3 kernel otherwise mentioned in comments. maxpool uses 2,2 with stride=2.
@@ -220,7 +221,7 @@ Modal forward is shown below, with input,output. All uses 3,3 kernel otherwise m
         return out_array
 
 	
-SECTION#4: Training Strategy (This section will be interesting with results shown with images)
+## SECTION#4: Training Strategy (This section will be interesting with results shown with images)
 
 	IMAGE SIZE VS BATCH SIZE USED:
 	32 * 32 		1024
@@ -239,20 +240,24 @@ IMAGE SIZE VS BATCH SIZE RECOMMONDED:
 	128 * 128 		64
 	256 * 256 		16
 
-So, I followed one strategy -> Understand the loss functions quickly by experimenting with 32*32 size and apply the resulted weights on bigger images and retrain for few epochs.
+### Understand the loss functions quickly by experimenting with 32*32 size and apply the resulted weights on bigger images and retrain for few epochs.
 
 It is similar to transfer learning. loaded zip into colab vm as reading from drive is time taking.
 
 So, with 32*32 size, I could able to try out all combinations of losses and their behavior as mentioned in earlier section.
 
-1. 1st Surprise(Interpolation effect). In this case, choosen is is (32,32) but, I then interpolate the output to (64,64) size and sent to the loss function and backprop. With this approach, it was fast, but looks few spatial features compromised. We can see the roundedness of interpolation effect in masks. And brightness of the depth is also not that good. Tried to subtract the bright ness (-0.005) before sending to loss, but that actually is whitening the image , nothing more. 
+### 1. Encounter with Interpolation effect. 
+
+In this case, choosen is is (32,32) but, I then interpolate the output to (64,64) size and sent to the loss function and backprop. With this approach, it was fast, but looks few spatial features compromised. We can see the roundedness of interpolation effect in masks. And brightness of the depth is also not that good. Tried to subtract the bright ness (-0.005) before sending to loss, but that actually is whitening the image , nothing more. 
 
 	Interpolation effect (Observed roundedness with (32,32) input size and interpolated to (64,64):
 	![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/interpolation-effect.jpg)
 
 		Conclusion: When we tried with small size, background quality is compromised, and rounded ness appeared due to interpolation. When the input size = size (minimum 64*64) used for loss calculation without interpolation, roundeness issue disappeared.
 
-2. So, I would like to understand the impact of input size, so tried with (64,64) as input size and the output as (64,64) but interpolate to (128,128) that is sent to loss function.
+### Understand the impact of input size.
+
+So tried with (64,64) as input size and the output as (64,64) but interpolate to (128,128) that is sent to loss function.
 	-> This has good predictability and better image quality on fore ground. First checked on 10000 images and latter applied for whole dataset. But I still see the roundedness.
 	
 	(64,64) interpolated to (128,128). Increased depth clarity , but roundedness present still.
@@ -260,8 +265,10 @@ So, with 32*32 size, I could able to try out all combinations of losses and thei
 
 		Conclusion: When the input size is 64*64, interpolated to (128,128) for loss calculation , depth quality is good but roundedness still exist. Without interpolation we observed the mask came up accurately pixelwise.
 	
-3. This time input was (128,128) output (128,128) and NO MORE interpolation, directly send the output to loss and backprop. 
-The same weights we got from initial 64 image we applied here, and the results are good and improved without training. But on random testing, still it required few epochs training.
+### 3. Arriving at a conclusion: 
+
+When did with, (128,128) input size output (128,128) and NO MORE interpolation, directly send the output to loss and backprop. 
+The same weights we got from initial 64 image we applied here, and the results are good and improved without training.
 
 weights got from 64*64 applied on 128*128:
 ![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/64weights_128_image.jpg)
@@ -271,8 +278,9 @@ Now we trained the above weights on sample of 10000 images for 1 epoch. I checke
 After 1 epoch training with transfered weights.
 ![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/64weights_128_image_with1epoch_transfertraining.jpg)
 
-4. With (128,128) size, now ran one more epoch on 30000 samples. This time I observed, loss started decreasing. Due to homogenity of either black or white, mask quickly shows reduction in its loss. But Depth across many images, every pixel has diffferent intensity. So, Earlier it used to stop at 0.01 and MSE loss did not converge, but with increased initial image size to 128*128, now the loss convergence is around 0.007. 
+### 4. Mask converges faster than Depth loss. Playing with learning rates.
 
+With (128,128) size, now ran one more epoch on 30000 samples. This time I observed, loss started decreasing. Due to homogenity of either black or white, mask quickly shows reduction in its loss. But Depth across many images, every pixel has diffferent intensity. So, Earlier it used to stop at 0.01 and MSE loss did not converge, but with increased initial image size to 128*128, now the loss convergence is around 0.007. 
 
 ![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/128_test_good.jpg)
 
