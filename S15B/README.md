@@ -1,36 +1,43 @@
-# Project Scope Description: 
+# ** Project Scope Description: 
 
 	We are  going to solve the multi objective training as a supervised learning problem. 
-	In short, it is Monocular depth estimation and mask detection. My journey through this challenge has been detailed out below.  
+	In short, it is Monocular depth estimation and mask detection. My journey through this challenge has been 
+	detailed out below.  
 
-What are we going to predict?. Given a background image and a overlayed image (foreground placed on the given background), we are going to predict the  depth map for the overlayed image and mask for the foreground image.
+What are we going to predict?. Given a background image and a overlayed image (foreground placed on the given background), 
+we are going to predict the  depth map for the overlayed image and mask for the foreground image.
 
-	To recap, We created the bg, fg, fgbg and corresponding ground truth depth and mask images in 15A (Please look for the README.md of 15A for dataset preperation strategy). 
+	To recap, We created the bg, fg, fgbg and corresponding ground truth depth and mask images in 15A 
+	(Please look for the README.md of 15A for dataset preperation strategy). 
 
 I put things under 6 sections.
 
-## SECTION#1: My Initial Thoughts
+### SECTION#1: My Initial Thoughts
 
-## SECTION#2: Custom Dataset class and index based strategy.
+### SECTION#2: Custom Dataset class and index based strategy.
 
-## SECTION#3: Modal Creation
+### SECTION#3: Modal Creation
 
-## SECTION#4: Training Strategy (This section will be interesting with results shown with images)
+### SECTION#4: Training Strategy (This section will be interesting with results shown with images)
 
-## SECTION#5: Experiments with Losses and Analysis (Important, but might be boring to read)
+### SECTION#5: Experiments with Losses and Analysis (Important, but might be boring to read)
 
-## SECTION#1: My Initial Thoughts
+### SECTION#1: My Initial Thoughts
 
-Many thoughts came into mind. Creating a modal is one thing, but running the modal and verifying its accuracy on 
-huge dataset of 4 lac is another challenge. I devided the total 4 lac samples in to 3 lac for training, and 1 lac for test. 
+Many thoughts came into my mind. Creating a modal is one thing which I would talk in section#3, but running the modal
+and verifying its accuracy on huge dataset of 4 lac is another challenge. I devided the total 4 lac samples in to 
+3 lac for training, and 1 lac for test. 
 	
-	Now I have 3 lac data for training. With Image size is 224*224, colab can take a batch size of 16, anything ,more than that it throws "Cuda out of Memory" error. So, with 16 batch size, total batches per epoch= 300000/16 = 18750. 
+	Now I have 3 lac data for training. With Image size is (224,224), colab can take a batch size of 16, anything,more 
+	than that it throws "Cuda out of Memory" error. So, with 16 batch size, total batches per epoch= 300000/16 = 18750. 
 	
-	As per the observation, 1 batch takes, 1.4 second time, and the whole 18750 batches takes almost 7.3 hrs. My first task is to understand whether modal is working or not and to understand different loss functions.
+	As per the observation, 1 batch takes, 1.4 second time, and the whole 18750 batches takes almost 7.3 hrs. My first 
+	task is to understand whether modal is working or not and to understand different loss functions.
 	
-	So, I did reduce the image size to 32*32, so that I can use batch size of 1024 in colab. This worked. With this we only have to run 293 batches which will take less than 7 minutes for the whole 300k training dataset.
+	So, I did reduce the image size to 32*32, so that I can use batch size of 1024 in colab. This worked. With this we 
+	only have to run 293 batches which will take less than 7 minutes for the whole 300k training dataset.
 	
-## SECTION#2: Custom Dataset class and index based strategy.
+### SECTION#2: Custom Dataset class and index based strategy.
 
 I created a custom Dataset class which takes input -> root, size, test = False, start= 1,  transform=ToTensor())
 root -> path for the Dataset directory. The same class is used for both training and testing. while training test =  False, else True. 
