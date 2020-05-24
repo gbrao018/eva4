@@ -35,7 +35,7 @@ and verifying its accuracy on huge dataset of 4 lac is another challenge. I devi
 	task is to understand whether modal is working or not and to understand different loss functions.
 	
 	So, I did reduce the image size to 32*32, so that I can use batch size of 1024 in colab. This worked. With this we 
-	only have to run 293 batches which will take less than 7 minutes for the whole 300k training dataset.
+	only have to run 293 batches which will take less than 7 minutes per epoch, for the whole 300k training dataset.
 	
 ### SECTION#2: Custom Dataset class and index based strategy.
 
@@ -159,11 +159,22 @@ Data Augmentation: I did not use any Data Augmentation for this project, as init
 
 ## SECTION#3: Modal Creation
 
-	Now Dataset class is ready. Lets look to the Modal. I wrote my own custom modal which basically similar to Densenet. This modal works with any image sizes.
+Initially, I went through the internet literature. Most of the solutions are depth prediction, by using dynamic image changes from t to t + delta_t time difference. State of the art curently is Unet model which uses encoders and decoder with Fully connected layers.
+
+I want to create my own model and I do not want to use fully connected layer. gap layer also I avoided as both FC and gap layers would destruct the spacial features, i.e., depth in our case.  
+
+	Now Dataset class is ready. Lets look to the Modal. I wrote my own custom modal which is modified version of Densenet. 
+	This modal works with any image sizes.
+	
+	To achive the receptive field, CNN widely uses maxpooling. but max pooling shrinks the image size.
+	Case#1: Start with 1024->MP->512->MP->256->MP->128 and finally evaluate the loss with (128,128) ground truths. But we cant use good batch size due to GPU limitations.
+	Case#2: Start with any size, after 3 max pools, upscale the image till we arrive at initial size.
+	
+	I choosen the 2nd case.
+	
 
 Basic modal structure looks below. We combine both input fg + fgbg which will become 6 channels. Modal takes these 6 channels as input.
-The modal has 3 maxpools, that shrinks the images to W/8,H/8 at 3rd maxpool. I followed specific channel outputs till each maxpool.
-Example,
+The modal has 3 maxpools. After 3rd maxpool , image size will be W/8,H/8.
 
 	Till 1st Maxpool -> output channels are 64 and input channels are concats of earlier output. Maxpool is done by concatinating previous outputs. x4=maxpool(torch.cat([x2,x3],dim=1))
 	
