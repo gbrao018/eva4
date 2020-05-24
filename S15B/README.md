@@ -289,12 +289,14 @@ With 32*32 image size, I can give 1032 batch size and was able to finish one epo
 and it takes 7 hours to complete one epoch. If we try to give bugger batch size, it throws CUDA out of memory error. To save ourselves from Cuda error, below is the recommonded batch size.
 
 IMAGE SIZE VS BATCH SIZE RECOMMONDED:
-32 * 32 		1024
-64 * 64 		256
-128 * 128 		64
-256 * 256 		16
+
+	32 * 32 		1024
+	64 * 64 		256
+	128 * 128 		64
+	256 * 256 		16
 
 So, I followed one strategy -> Understand the loss functions quickly by experimenting with 32*32 size and apply the resulted weights on bigger images and retrain for few epochs.
+
 It is similar to transfer learning. loaded zip into colab vm as reading from drive is time taking.
 So, with 32*32 size, I could able to try out all combinations of losses and their behavior as mentioned in earlier section.
 In this case, the output also is 32*32 but , I then interpolate to 64*64 size and sent to the loss function and backprop. With this approach, it was fast, but looks few spatial features compromised. We can see the roundedness of interpolation effect in masks. And brightness of the depth is also not that good. Tried to subtract the bright ness (-0.005) before sending to loss, but that actually is whitening the image , nothing more. 
@@ -341,10 +343,10 @@ Naturally depth loss start increasing epoch by epoch. Now I start seeing sharp b
 
 256*256 input, 30k training samples. REDUCED THE BATCH SIZE TO 16. Loss = K(Depth-MSE + Mask-MSE + Depth_SSIM)
 
-L2-D=0.005351 L2-M=0.003557 SSIM-D=0.000727 MODAL-EXEC-TIME=0.008 BACKPROP-EXEC-TIME=0.009 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.155 GRAD-D=0.017597 SMOOTH-D=0.002676 SMOOTH-L1-M=0.001778 RMSE=0.098037 Meanlog10=nan Acc_D1=0.657427 Acc_D2=0.833152 Acc_D3=0.893974:
-	L2-D=0.005074 L2-M=0.003510 SSIM-D=0.000689 MODAL-EXEC-TIME=0.007 BACKPROP-EXEC-TIME=0.008 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.155 GRAD-D=0.017226 SMOOTH-D=0.002537 SMOOTH-L1-M=0.001755 RMSE=0.090943 Meanlog10=nan Acc_D1=0.678247 Acc_D2=0.845829 Acc_D3=0.901804:
-	L2-D=0.004956 L2-M=0.003466 SSIM-D=0.000673 MODAL-EXEC-TIME=0.008 BACKPROP-EXEC-TIME=0.009 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.155 GRAD-D=0.016984 SMOOTH-D=0.002478 SMOOTH-L1-M=0.001733 RMSE=0.088309 Meanlog10=nan Acc_D1=0.688958 Acc_D2=0.851394 Acc_D3=0.904802:
-	L2-D=0.004888 L2-M=0.003419 SSIM-D=0.000665 MODAL-EXEC-TIME=0.008 BACKPROP-EXEC-TIME=0.008 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.155 GRAD-D=0.016844 SMOOTH-D=0.002444 SMOOTH-L1-M=0.001709 RMSE=0.086521 Meanlog10=nan Acc_D1=0.697304 Acc_D2=0.855762 Acc_D3=0.907248:
+	L2-D=0.005351 L2-M=0.003557 SSIM-D=0.000727 MODAL-EXEC-TIME=0.008 BACKPROP-EXEC-TIME=0.009 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.155 GRAD-D=0.017597 SMOOTH-D=0.002676 SMOOTH-L1-M=0.001778 RMSE=0.098037 Meanlog10=nan Acc_D1=0.657427 Acc_D2=0.833152 Acc_D3=0.893974:
+		L2-D=0.005074 L2-M=0.003510 SSIM-D=0.000689 MODAL-EXEC-TIME=0.007 BACKPROP-EXEC-TIME=0.008 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.155 GRAD-D=0.017226 SMOOTH-D=0.002537 SMOOTH-L1-M=0.001755 RMSE=0.090943 Meanlog10=nan Acc_D1=0.678247 Acc_D2=0.845829 Acc_D3=0.901804:
+		L2-D=0.004956 L2-M=0.003466 SSIM-D=0.000673 MODAL-EXEC-TIME=0.008 BACKPROP-EXEC-TIME=0.009 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.155 GRAD-D=0.016984 SMOOTH-D=0.002478 SMOOTH-L1-M=0.001733 RMSE=0.088309 Meanlog10=nan Acc_D1=0.688958 Acc_D2=0.851394 Acc_D3=0.904802:
+		L2-D=0.004888 L2-M=0.003419 SSIM-D=0.000665 MODAL-EXEC-TIME=0.008 BACKPROP-EXEC-TIME=0.008 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.155 GRAD-D=0.016844 SMOOTH-D=0.002444 SMOOTH-L1-M=0.001709 RMSE=0.086521 Meanlog10=nan Acc_D1=0.697304 Acc_D2=0.855762 Acc_D3=0.907248:
 
 The above is a good convergence.
 
@@ -369,7 +371,7 @@ Now Lets increase the sample size to 100k . We had experience of good depth pred
 
 	L2-D=0.007237 L2-M=0.001173 BCE-M=0.013984 SSIM-D=0.001036 MODAL-EXEC-TIME=0.006 BACKPROP-EXEC-TIME=0.007 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.156 GRAD-D=0.013809 SMOOTH-D=0.003618 SMOOTH-L1-M=0.000586 RMSE=0.258638 Meanlog10=nan Acc_D1=0.228543 Acc_D2=0.401711 Acc_D3=0.542491:
 
-Next, we will train on 100k dataset. This should give good improvement in depths. Every time we increase the resolution, we observed the initial epochs shows depth is not well developed. masks are ok. This is good sign because, There is more to learning
+Next, trained on 100k dataset. This gave good improvement in depths. Every time we increase the resolution, we observed the initial epochs shows depth is not well developed. masks are ok. This is good sign because, There is more to learning
 for the bigger resolution on top of transfered weights, which can give fine depths in subsequent epochs. It is slowly increasing its background prediction capability.
 Mask is perfect almost.
 
