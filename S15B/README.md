@@ -35,7 +35,7 @@ and verifying its accuracy on huge dataset of 4 lac is another challenge. I devi
 	task is to understand whether modal is working or not and to understand different loss functions.
 	
 	So, I did reduce the image size to 32*32, so that I can use batch size of 1024 in colab. This worked. With this we 
-	only have to run 293 batches which will take less than 7 minutes for the whole 300k training dataset.
+	only have to run 293 batches which will take less than 7 minutes per epoch, for the whole 300k training dataset.
 	
 ### SECTION#2: Custom Dataset class and index based strategy.
 
@@ -159,21 +159,104 @@ Data Augmentation: I did not use any Data Augmentation for this project, as init
 
 ## SECTION#3: Modal Creation
 
-	Now Dataset class is ready. Lets look to the Modal. I wrote my own custom modal which basically similar to Densenet. This modal works with any image sizes.
+Initially, I went through the internet literature. Most of the solutions are depth prediction, by using dynamic image changes from t to t + delta_t time difference. State of the art curently is Unet model which uses encoders and decoder with Fully connected layers.
 
-Basic modal structure looks below. We combine both input fg + fgbg which will become 6 channels. Modal takes these 6 channels as input.
-The modal has 3 maxpools, that shrinks the images to W/8,H/8 at 3rd maxpool. I followed specific channel outputs till each maxpool.
-Example,
+	I want to create my own model and I do not want to use fully connected layer. I avoided gap layer also, as both FC and gap layers would destruct the spacial features.  In our case, spatial features like back ground etc are very important.
 
-	Till 1st Maxpool -> output channels are 64 and input channels are concats of earlier output. Maxpool is done by concatinating previous outputs. x4=maxpool(torch.cat([x2,x3],dim=1))
+	To achive the receptive field, CNN widely uses maxpooling. but max pooling shrinks the image size. I see two possibilities.
 	
-	Till 2nd Maxpool -> output channels are 128 and input channels are concats of earlier output. Again Maxpool is done by concatinating previous outputs. x8=maxpool(torch.cat([x5,x6,x7],dim=1))
+	Case#1: Start with 1024->MP->512->MP->256->MP->128 and finally evaluate the loss with (128,128) ground truths. But we cant use good batch size due to GPU limitations.
 	
-	Till 3nd Maxpool -> output channels are 256 and input channels are concats of earlier output. Again Maxpool is done by concatinating previous outputs. x12=maxpool(torch.cat([x9,x10,x11],dim=1))
+	Case#2: Start with any size, after 3 max pools, upscale the image till we arrive at initial size.
 	
-	For, x15, I have concatenated the x12 maxpool also. x15 = self.x15(torch.cat([x12,x13,x14],dim=1)) # 512 channels. From here on we go on upscaling the image size
+	I choosen the case#2. May be I can try with case#1 also in the future for comparison.
 	
-	while ADDING the appropriate output that is just one bofore the maxpool stage.  
+
+#### Basic modal structure: 
+We concatinate both input fg + fgbg which will become 6 channels. Modal takes these 6 channels as input.
+The modal has 3 maxpools. After 3rd maxpool , image size will become W/8,H/8.
+
+I followed a specific channel output between each maxpool
+	![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/model_arch.png)
+
+	For, x15, I have concatenated the x12 maxpool also. 
+	x15 = self.x15(torch.cat([x12,x13,x14],dim=1)) # 512 channels. From here on we go on upscaling till we arrive at the input image size.
+	
+*** while in encoder stage I used concatenations. White in upstage I used addition of channels(+). 
+	
+### Model Parameters:
+----------------------------------------------------------------
+        Layer (type)               Output Shape         Param #
+================================================================
+            Conv2d-1         [-1, 64, 256, 256]           3,520
+              ReLU-2         [-1, 64, 256, 256]               0
+       BatchNorm2d-3         [-1, 64, 256, 256]             128
+            Conv2d-4         [-1, 64, 256, 256]          36,928
+              ReLU-5         [-1, 64, 256, 256]               0
+       BatchNorm2d-6         [-1, 64, 256, 256]             128
+         MaxPool2d-7        [-1, 128, 128, 128]               0
+            Conv2d-8        [-1, 128, 128, 128]         147,584
+              ReLU-9        [-1, 128, 128, 128]               0
+      BatchNorm2d-10        [-1, 128, 128, 128]             256
+           Conv2d-11        [-1, 128, 128, 128]         295,040
+             ReLU-12        [-1, 128, 128, 128]               0
+      BatchNorm2d-13        [-1, 128, 128, 128]             256
+           Conv2d-14        [-1, 128, 128, 128]         442,496
+             ReLU-15        [-1, 128, 128, 128]               0
+      BatchNorm2d-16        [-1, 128, 128, 128]             256
+        MaxPool2d-17          [-1, 384, 64, 64]               0
+           Conv2d-18          [-1, 256, 64, 64]         884,992
+             ReLU-19          [-1, 256, 64, 64]               0
+      BatchNorm2d-20          [-1, 256, 64, 64]             512
+           Conv2d-21          [-1, 256, 64, 64]       1,474,816
+             ReLU-22          [-1, 256, 64, 64]               0
+      BatchNorm2d-23          [-1, 256, 64, 64]             512
+           Conv2d-24          [-1, 256, 64, 64]       2,064,640
+             ReLU-25          [-1, 256, 64, 64]               0
+      BatchNorm2d-26          [-1, 256, 64, 64]             512
+        MaxPool2d-27          [-1, 768, 32, 32]               0
+           Conv2d-28          [-1, 512, 32, 32]       3,539,456
+             ReLU-29          [-1, 512, 32, 32]               0
+      BatchNorm2d-30          [-1, 512, 32, 32]           1,024
+           Conv2d-31          [-1, 512, 32, 32]       5,898,752
+             ReLU-32          [-1, 512, 32, 32]               0
+      BatchNorm2d-33          [-1, 512, 32, 32]           1,024
+           Conv2d-34          [-1, 512, 32, 32]       8,258,048
+             ReLU-35          [-1, 512, 32, 32]               0
+      BatchNorm2d-36          [-1, 512, 32, 32]           1,024
+           Conv2d-37          [-1, 256, 64, 64]         131,328
+      BatchNorm2d-38          [-1, 256, 64, 64]             512
+             ReLU-39          [-1, 256, 64, 64]               0
+           Conv2d-40          [-1, 256, 64, 64]         590,080
+      BatchNorm2d-41          [-1, 256, 64, 64]             512
+             ReLU-42          [-1, 256, 64, 64]               0
+           Conv2d-43        [-1, 128, 128, 128]          32,896
+      BatchNorm2d-44        [-1, 128, 128, 128]             256
+             ReLU-45        [-1, 128, 128, 128]               0
+           Conv2d-46        [-1, 128, 128, 128]         147,584
+      BatchNorm2d-47        [-1, 128, 128, 128]             256
+             ReLU-48        [-1, 128, 128, 128]               0
+           Conv2d-49         [-1, 64, 256, 256]           8,256
+      BatchNorm2d-50         [-1, 64, 256, 256]             128
+             ReLU-51         [-1, 64, 256, 256]               0
+           Conv2d-52         [-1, 64, 256, 256]          36,928
+      BatchNorm2d-53         [-1, 64, 256, 256]             128
+             ReLU-54         [-1, 64, 256, 256]               0
+           Conv2d-55         [-1, 32, 256, 256]          18,464
+      BatchNorm2d-56         [-1, 32, 256, 256]              64
+             ReLU-57         [-1, 32, 256, 256]               0
+           Conv2d-58          [-1, 1, 256, 256]              33
+           Conv2d-59          [-1, 1, 256, 256]             289
+================================================================
+Total params: 24,019,618
+Trainable params: 24,019,618
+Non-trainable params: 0
+----------------------------------------------------------------
+Input size (MB): 1.50
+Forward/backward pass size (MB): 863.00
+Params size (MB): 91.63
+Estimated Total Size (MB): 956.13
+----------------------------------------------------------------
 
 Modal forward is shown below, with input,output. All uses 3,3 kernel otherwise mentioned in comments. maxpool uses 2,2 with stride=2.
 
