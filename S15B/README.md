@@ -41,7 +41,7 @@ and verifying its accuracy on huge dataset of 4 lac is another challenge. I devi
 	
 ### SECTION#2: Model Creation
 
-Initially, I went through the internet literature. Most of the solutions are depth prediction, by using dynamic image changes from t to t + delta_t time difference. State of the art curently is Unet model which uses encoders and decoder with Fully connected layers.
+Initially, I went through the internet literature. Most of the solutions are depth prediction, by using dynamic image changes from t to t + delta_t time difference.
 
 	I want to create my own model and I do not want to use fully connected layer. I avoided gap layer also, as 
 	both FC and gap layers would destruct the spacial features.  In our case, spatial features like back ground 
@@ -565,4 +565,13 @@ create on changes of ground truths.
 	I believe, I can do some data augmentation with additional brightness (adding some factor to tensor), 
 	hue, saturations. This I will try in future.
 
-	
+Further Experiments:
+
+1. Apply hue, saturation, brightness, constrast as augmentation .
+
+2. Do the depth pixel segmentation only to back ground image and apply transfer learning to fgbg. 
+
+3. Start with bigger image and then to output 128*128. No upsampling 
+
+
+
