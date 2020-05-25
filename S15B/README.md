@@ -352,9 +352,9 @@ Mask is perfect almost.
 
 ### SECTION#4: Experiments with Losses and Analysis (Important, but might be boring to read)
 
-I tried many loss functions.L1(MAE), L2(MSE), SmoothL1, SSIM, Gradient, BCE. For depth MSE outperformed. For mask actually it does not matter, because we are already doing sigmoid.
+##### Conclusion comments: I tried many loss functions.L1(MAE), L2(MSE), SmoothL1, SSIM, Gradient, BCE, sigmoid. For depth MSE outperformed. For mask actually it does not matter, because we are already doing sigmoid.
 	
-	But I would like to discuss few combinations here. What ever the combination is, I calculated many loss values and logged them to understand their change behavior. only L1 loss has the convergence issue. It became very difficult to achive the global minima.
+	My above statement is based on below, experimentations. I would like to discuss few combinations here. What ever the combination is, I calculated many loss values and logged them to understand their change behavior. L1 loss has the convergence issue. It became very difficult to achive the global minima. SSIM, Gradient losses does not have specific impact on depth. 
 	
 #### 4.1: Loss = aD + bM is not a Good equation. a and b constants and D is MSE for depth and M is MSE for mask. NOT a good combination.
 	Lets say a > b, We are punishing the convergence of mask. Actually mask has faster convergence behavior due to its black and white nature.
