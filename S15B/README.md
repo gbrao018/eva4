@@ -261,13 +261,22 @@ Initially, applied the same weights we got from initial (64,64) image on (128,12
 
 Now we trained the above weights on sample of 10000 images for 1 epoch. I checked the image quality, the background depth quality is clearly improved.
 
-#### 3.3.2 Bigger the input image size, better the depth maps. Transfer learning: Applied weihgts from (64,64) to 128*128 and trained for one epoch:
 ![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/64weights_128_image_with1epoch_transfertraining.jpg)
 
-	Conclusion: With increased initial image size of 128*128, now the loss convergencence is around 0.007 
-	which better than earlier 0.01. So I conclude the minimum image size required is 128*128, and bigger the image 
-	size, quality of depth map is better. 
+#### 3.3.2 Quality of depth maps depend on image size as well the no of samples trained. 
+
+![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/256_300k_epoch1.png)
+
+	Conclusion: The above images are with 256*256 input image size and trained on 300k samples. So concluded that 
+	Quality of depth maps depend on image size as well the no of samples trained.
 	
+#### 3.3.3 Bigger the foreground image(Occupying more pixels relatively), depth map predicts it as if it is nearer.
+
+![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/256_300k_epoch1_random3_biggersize_predict_front.png)
+
+		Conclusion: The bigger the foreground image, that is more the pixels that foregorund image occupies, 
+		model tries to predict it as nearer.
+		
 ### 3.4. Mask converges faster than Depth loss. Playing with learning rates.
 
 With (128,128) size, now ran one more epoch on 30000 samples. Due to homogenity of either black or white, mask quickly shows 
@@ -348,7 +357,18 @@ for the bigger resolution on top of transfered weights, which can give fine dept
 Mask is perfect almost.
 
 #### FINAL OUTPUT:
+
+Testing conducted on test samples. Below are the predicted images.
+
 ![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/final_12.png)
+
+![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/256_300k_epoch1_random2.png)
+
+![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/256_300k_epoch1_random4.png)
+
+![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/256_300k_epoch1_random5.png)
+
+![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/256_300k_epoch1_random6.png)
 
 ### SECTION#4: Experiments with Losses and Analysis (Important, but might be boring to read)
 
