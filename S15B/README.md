@@ -256,12 +256,12 @@ So tried with (64,64) as input size and the output as (64,64) but interpolate to
 When did with, (128,128) input size, and output (128,128) and NO MORE interpolation, before sending to loss and backprop. 
 Initially, applied the same weights we got from initial (64,64) image on (128,128), and the results are good and improved without training.
 
-#### Transfer learning worked: Applied weights from (64,64) to 128*128:
+#### 3.3.1 Transfer learning worked: Applied weights from (64,64) to 128*128:
 ![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/64weights_128_image.jpg)
 
 Now we trained the above weights on sample of 10000 images for 1 epoch. I checked the image quality, the background depth quality is clearly improved.
 
-#### Bigger the input image size, better the depth maps. Transfer learning: Applied weihgts from (64,64) to 128*128 and trained for one epoch:
+#### 3.3.2 Bigger the input image size, better the depth maps. Transfer learning: Applied weihgts from (64,64) to 128*128 and trained for one epoch:
 ![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/64weights_128_image_with1epoch_transfertraining.jpg)
 
 	Conclusion: With increased initial image size of 128*128, now the loss convergencence is around 0.007 
