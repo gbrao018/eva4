@@ -13,7 +13,7 @@ from mpl_toolkits.axes_grid1 import ImageGrid
 import numpy as np
     
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
-def test(modal, test_loader, epoch, preds, labels, last_batch):
+def test(modal, val_loader, epoch, preds, labels, last_batch):
   with torch.no_grad():
     for input_array1 in val_loader:
       count = count + 1
@@ -55,3 +55,4 @@ def test(modal, test_loader, epoch, preds, labels, last_batch):
         desc = f'Loss={loss.item()} Epoch={epoch} Batch_id={batch_idx}  L2-DEPTH={lossd2.item():0.6f} BCE-MASK={mask_bce_loss.item():0.6f}  Acc-Delat1={delta1:0.6f} Acc-Delat2={delta2:0.6f} Acc-Delat3={delta3:0.6f}'
         logging.info(desc)
         pbar.set_description(desc)
+    
