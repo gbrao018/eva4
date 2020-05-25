@@ -170,7 +170,7 @@ class DenseDepthDNN2(torch.nn.Module):
             #nn.Dropout(dropout_value)
         )
 
-        self.x64_inconv_32 = nn.Sequential( #input 64*64*64, output_size = (64*64*32), RF=42
+        self.x64_inconv_32 = nn.Sequential( #input 64*64*64, output_size = (64*64*32)
             nn.Conv2d(in_channels=64, out_channels=32, kernel_size=3,padding=1),
             nn.BatchNorm2d(32),
             nn.ReLU(),
@@ -178,17 +178,14 @@ class DenseDepthDNN2(torch.nn.Module):
         )
 
         #one for depth and one for mask
-        self.xdepth_conv_1_1 = nn.Sequential( #input 64*64*32, output_size = (64*64*3), RF=42
+        self.xdepth_conv_1_1 = nn.Sequential( #input 64*64*32, output_size = (64*64*3)
             nn.Conv2d(in_channels=32, out_channels=1, kernel_size=1)
             #nn.Dropout(dropout_value)
         )
         self.predict_mask = nn.Conv2d(32, 1, kernel_size=3, padding=1)
     
     def forward(self, x1):
-        
-        
-        
-        
+      
         x2 = self.x2(x1) #input 6*W*H, output=W*H*64 , RF =2                          
         x3 = self.x3(x2) #input W*H*64, output=W*H*64, RF=4  
         
