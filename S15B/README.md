@@ -245,7 +245,7 @@ So tried with (64,64) as input size and the output as (64,64) but interpolate to
 	-> This has good predictability and better image quality on fore ground. First checked on 10000 images and later
 	applied for whole dataset. But I still see the roundedness.
 
-#### (64,64) interpolated to (128,128). Increased depth clarity , but roundedness present still.
+#### No interpolation means, pixel perfect masks. (64,64) interpolated to (128,128). Increased depth clarity , but roundedness present still.
 ![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/64_interpolate_128_7_2.jpg)
 
 		Conclusion: When the input size is 64*64, interpolated to (128,128) for loss calculation , 
@@ -256,12 +256,12 @@ So tried with (64,64) as input size and the output as (64,64) but interpolate to
 When did with, (128,128) input size, and output (128,128) and NO MORE interpolation, before sending to loss and backprop. 
 Initially, applied the same weights we got from initial (64,64) image on (128,128), and the results are good and improved without training.
 
-#### Transfer learning: Applied weihgts from (64,64) to 128*128:
+#### Transfer learning worked: Applied weights from (64,64) to 128*128:
 ![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/64weights_128_image.jpg)
 
 Now we trained the above weights on sample of 10000 images for 1 epoch. I checked the image quality, the background depth quality is clearly improved.
 
-#### Transfer learning: Applied weihgts from (64,64) to 128*128 and trained for one epoch:
+#### Bigger the input image size, better the depth maps. Transfer learning: Applied weihgts from (64,64) to 128*128 and trained for one epoch:
 ![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/64weights_128_image_with1epoch_transfertraining.jpg)
 
 	Conclusion: With increased initial image size of 128*128, now the loss convergencence is around 0.007 
@@ -271,7 +271,7 @@ Now we trained the above weights on sample of 10000 images for 1 epoch. I checke
 ### 3.4. Mask converges faster than Depth loss. Playing with learning rates.
 
 With (128,128) size, now ran one more epoch on 30000 samples. Due to homogenity of either black or white, mask quickly shows 
-converges in its loss. But Depth across many images, every pixel has diffferent intensity.  
+converges in its loss. But Depth across many images, every pixel has diffferent intensity.  Different learning rates of e-03,e-04,e-05 have been used. 
 
 ![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/128_test_good.jpg)
 
