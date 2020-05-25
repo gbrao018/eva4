@@ -74,6 +74,7 @@ I followed a specific channel output between each maxpool
 #### while in maxpool/encoder stage I used concatenations(concate). While in upscaling/decoder stage, I used addition of channels(+). 
 	
 ### Model Parameters:
+[model:link](https://github.com/gbrao018/eva4/blob/master/models/DenseDepthDNN2.py)
 
 	----------------------------------------------------------------
 		Layer (type)               Output Shape         Param #
@@ -464,8 +465,8 @@ BCE is dancing according to MSE of mask. But seems for mask it does not matter w
 
 ![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/256_300k_epoch1_random6.png)
 
-#### SECTION#5: Custom Dataset class and index based strategy & Timeit of dataloading and loss calcualations.
-
+### SECTION#5: Custom Dataset class and index based strategy & Timeit of dataloading and loss calcualations.
+[MonocularDepth Dataset](https://github.com/gbrao018/eva4/blob/master/dataset/MonocularDepth_Dataset.py)
 I created a custom Dataset class which takes input -> root, size, test = False, start= 1,  transform=ToTensor())
 root -> path for the Dataset directory. The same class is used for both training and testing. while training test =  False, else True. 
 
