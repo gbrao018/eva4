@@ -270,11 +270,11 @@ Now we trained the above weights on sample of 10000 images for 1 epoch. I checke
 	Conclusion: The above images are with 256*256 input image size and trained on 300k samples. So concluded that 
 	Quality of depth maps depend on image size as well the no of samples trained.
 	
-#### 3.3.3 Bigger the foreground image(Occupying more pixels relatively), depth map predicts it as if it is nearer.
+#### 3.3.3 Bigger the foreground image (Occupying more pixels relatively), depth map predicts it as if it is nearer.
 
 ![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/256_300k_epoch1_random3_biggersize_predict_front.png)
 
-		Conclusion: The bigger the foreground image, that is more the pixels that foregorund image occupies, 
+		Conclusion: In the above image, Auto occupies more pixels, and our depth model predicted as if it nearer. The bigger the foreground image, that is more the pixels that foregorund image occupies, 
 		model tries to predict it as nearer.
 		
 ### 3.4. Mask converges faster than Depth loss. Playing with learning rates.
@@ -358,7 +358,7 @@ Mask is perfect almost.
 
 #### FINAL OUTPUT:
 
-Testing conducted on test samples. Below are the predicted images.
+Random testing conducted on test samples. Below are the predicted images. We can observe few white marks. With more epochs of training, they can be gone.
 
 ![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/final_12.png)
 
@@ -367,8 +367,6 @@ Testing conducted on test samples. Below are the predicted images.
 ![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/256_300k_epoch1_random4.png)
 
 ![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/256_300k_epoch1_random5.png)
-
-![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/256_300k_epoch1_random6.png)
 
 ### SECTION#4: Experiments with Losses and Analysis (Important, but might be boring to read)
 
@@ -444,7 +442,7 @@ In one experiement did with gradient loss, I observed it is actually trying to a
 	
 Not much of a difference in converence pattern between Trial#2 and Trial#3. It shows MSE for both depth and mask is doing good due to equal weights. I observed the output of the mask quality is very good.
 	
-#### 4.5: Testing with BCE. Depth loss is the king. Mask loss function is immaterial.
+#### 4.5: Depth loss is the king. Mask loss function is immaterial. Testing with BCE. 
 
 I replaced the MSE for mask with BCE for mask. Loss = K(L2_depth + BCE_Mask)
 
@@ -462,6 +460,9 @@ I replaced the MSE for mask with BCE for mask. Loss = K(L2_depth + BCE_Mask)
 	INFO:root:Loss=1.5033087730407715 Epoch=0 Batch_id=6249  L2-D=0.006372 L2-M=0.001553 BCE-M=0.015103 SSIM-D=0.000897 MODAL-EXEC-TIME=0.005 BACKPROP-EXEC-TIME=0.005 L2-DEPTH-TIME=0.000 L2-MASK-TIME=0.000 SSIM-DEPTH-TIME=0.157 GRAD-D=0.013098 SMOOTH-D=0.003186 SMOOTH-L1-M=0.000776 RMSE=0.257570 Meanlog10=nan Acc_D1=0.228770 Acc_D2=0.404714 Acc_D3=0.547733
 
 BCE is dancing according to MSE of mask. But seems for mask it does not matter wheather we use BCE or MSE, both are doing good.
+
+
+![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/256_300k_epoch1_random6.png)
 
 #### SECTION#5: Custom Dataset class and index based strategy & Timeit of dataloading and loss calcualations.
 
