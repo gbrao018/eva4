@@ -586,6 +586,31 @@ create on changes of ground truths.
 	I believe, I can do some data augmentation with additional brightness (adding some factor to tensor), 
 	hue, saturations. This I will try in future.
 
+#### Timit logs:
+
+##### Time taken for loading images : 0.07 s average
+
+[imageloadtime.link](https://raw.githubusercontent.com/gbrao018/eva4/master/S15B/logs/dataloader_timeit_1.txt)
+
+
+##### Complete epoch(18749 batches) log with different losses & time taken:
+[timeit.link](https://raw.githubusercontent.com/gbrao018/eva4/master/S15B/logs/dataloader_timeit_256.log)
+
+	MSE Depth loss=0.007116 
+	MSE Mask Loss=0.001509 
+	Mask BCE Loss=0.016888 
+	Depth SSIM Loss =0.000987
+	GRAD-DEPTH=0.015381 
+	SMOOTH-DEPTH=0.003558 
+	SMOOTH-L1-MASK=0.000755
+
+	MODAL-EXEC-TIME=0.008 
+	BACKPROP-EXEC-TIME=0.007 
+	MSE-DEPTH-TIME=0.000 
+	MSE-MASK-TIME=0.000 
+	SSIM-DEPTH-TIME=0.156 
+	
+
 Further Experiments:
 
 1. Apply hue, saturation, brightness, constrast as augmentation .
