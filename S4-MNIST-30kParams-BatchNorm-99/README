@@ -16,6 +16,3 @@ Trial 3: With Batch Normalization
 This time tried with less than 16000
 used kernel counts 8,16,32
 Got 99.35% accuracy
-#Trial4: With Droputs
-
-Accuracy dropped to 98 here. Something went wrong here.
