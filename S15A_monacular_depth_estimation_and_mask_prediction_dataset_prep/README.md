@@ -25,12 +25,15 @@ Assuming camera position, focal length and aperture are fixed, we can observe th
 
 Example..Look at the below two images. Both are 150 * 150 
                                                              
-Original back ground image:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img1.jpg)                                   
+Original back ground image:![image](https://github.com/gbrao018/eva4/blob/master/
+S15A_monacular_depth_estimation_and_mask_prediction_dataset_prep/images/img1.jpg)                                   
 
-Original fore ground image:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img2.png)                                   
+Original fore ground image:![image](https://github.com/gbrao018/eva4/blob/master/
+S15A_monacular_depth_estimation_and_mask_prediction_dataset_prep/images/img2.png)                                   
 
                        
-Fig 1.0:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/fig1.jpg)                                   
+Fig 1.0:![image](https://github.com/gbrao018/eva4/blob/master/
+S15A_monacular_depth_estimation_and_mask_prediction_dataset_prep/images/fig1.jpg)                                   
 			
 
   Let’s call backgound image as ‘bg’, foreground image as ‘fg’ and overlayed image as ‘fg_bg’ from now on interchangibly.
@@ -41,13 +44,17 @@ PROCUDURE TO CREATE OVERLAY FOREGROUND ON BACKGROUND: The background image forma
 
 Now , below are the choosen images for illustration
 
-bg.jpg:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img1.jpg)
+bg.jpg:![image](https://github.com/gbrao018/eva4/blob/master/
+S15A_monacular_depth_estimation_and_mask_prediction_dataset_prep/images/img1.jpg)
 
-fg.png:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img5.jpg)
+fg.png:![image](https://github.com/gbrao018/eva4/blob/master/
+S15A_monacular_depth_estimation_and_mask_prediction_dataset_prep/images/img5.jpg)
 
-fg_bg:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img7.jpg) 
+fg_bg:![image](https://github.com/gbrao018/eva4/blob/master/
+S15A_monacular_depth_estimation_and_mask_prediction_dataset_prep/images/img7.jpg) 
 
-mask_fgbg:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/mask_fgbg.jpg)
+mask_fgbg:![image](https://github.com/gbrao018/eva4/blob/master/
+S15A_monacular_depth_estimation_and_mask_prediction_dataset_prep/images/mask_fgbg.jpg)
 
 
 FG MASK CREATION:
@@ -61,7 +68,8 @@ OVERLAY CREATION STEPS:
 Step1: Resize the fg (h,w) and identify the location(x,y) to place on bg, as per below . Say w,h are the width and height of the fg 
                            
 H,0)    
-![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/bbox.jpg)
+![image](https://github.com/gbrao018/eva4/blob/master/
+S15A_monacular_depth_estimation_and_mask_prediction_dataset_prep/images/bbox.jpg)
 NOW THE OVERLAYED AREA BOUNDING BOX IS bg[y:y+h, x:x+w] is our interested area where we have to put the fg object
 
 Step#2: Create an image from fg (b,g,r) channels. And normalize by deviding with 255.
@@ -79,13 +87,16 @@ fg_bg = clone(bg)
 fg_bg[y:y+h, x:x+w] = (1.0 – fg_mask) * fg_bg[y:y+h, x:x+w]+fg_mask*fg3
                       
 fg_mask*fg3:
-![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img10.jpg)
+![image](https://github.com/gbrao018/eva4/blob/master/
+S15A_monacular_depth_estimation_and_mask_prediction_dataset_prep/images/img10.jpg)
 
 (1.0-fg_mask)*bg[y:y+h,x:x+w]:
-![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img11.jpg)
+![image](https://github.com/gbrao018/eva4/blob/master/
+S15A_monacular_depth_estimation_and_mask_prediction_dataset_prep/images/img11.jpg)
 
 fg_bg:
-![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img12.jpg) 
+![image](https://github.com/gbrao018/eva4/blob/master/
+S15A_monacular_depth_estimation_and_mask_prediction_dataset_prep/images/img12.jpg) 
 
 We store the resultant fg_bg image in jpg format to save the storage.
 
@@ -101,7 +112,8 @@ But we do not have the alpha channel in our fg_bg. So, we do it diffeently.
 
 Given BG and FGBG, BELOW LOGIC CREATES FGBG MASK:
 
-mask process:![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img18.jpg)
+mask process:![image](https://github.com/gbrao018/eva4/blob/master/
+S15A_monacular_depth_estimation_and_mask_prediction_dataset_prep/images/img18.jpg)
 
 cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY) is the open cv function to convert to gray scale
 gray_image[gray_image>0] = 255, will create 1D mono color Mask either black or white pixel
@@ -112,8 +124,10 @@ gray_image[gray_image>0] = 255, will create 1D mono color Mask either black or w
 Storage Optimization:
                                               
 
-jpg image(10kb):![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img16.jpg)
-png(40 kb):![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/img17.png)
+jpg image(10kb):![image](https://github.com/gbrao018/eva4/blob/master/
+S15A_monacular_depth_estimation_and_mask_prediction_dataset_prep/images/img16.jpg)
+png(40 kb):![image](https://github.com/gbrao018/eva4/blob/master/
+S15A_monacular_depth_estimation_and_mask_prediction_dataset_prep/images/img17.png)
 
 These two fg_bg images one in jpg format the other in png format. Visually there is not much difference. But png is 40kb and jpg is 10 kb. So we will store the fg_bg overlayed image in jpg format.
 fg_bg is the input for our modal to predict depth map and mask.  400k such images we need to store. This way we can reduce the storage from 400000*40kb to 400000*10kb i.e., reduced to 4 GB from otherwise 16 GB.
@@ -174,7 +188,8 @@ Dataset150/
 	
 	depth_fgbg_100/
 
-root_dir: /content/gdrive/My Drive/eva-04/S15A/Dataset150/
+root_dir: /content/gdrive/My Drive/eva-04/
+S15A_monacular_depth_estimation_and_mask_prediction_dataset_prep/Dataset150/
 
 
 filenameing convension: bg5_0_2_flip_fg_73.jpg. 
@@ -228,7 +243,8 @@ Link for 2nd Dataset(224*224): https://drive.google.com/file/d/1kAG5x_3MLO8_5_US
 This 2nd dataset has the below structure(Thanks to Rohit, my group mate for 2nd set):
 
 
-![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/depth_folder.jpg)
+![image](https://github.com/gbrao018/eva4/blob/master/
+S15A_monacular_depth_estimation_and_mask_prediction_dataset_prep/images/depth_folder.jpg)
 
 	MEAN AND STD VALUES:
 
@@ -255,7 +271,8 @@ Total size of the dataset: Dataset.zip of size 4.62 gb
 
 Dataset samples:
 
-![image](https://github.com/gbrao018/eva4/blob/master/S15A/images/show.png)
+![image](https://github.com/gbrao018/eva4/blob/master/
+S15A_monacular_depth_estimation_and_mask_prediction_dataset_prep/images/show.png)
 
 
 Team members: Ganji Babu Rao, Rohit, Varinder Singh Sandhu
