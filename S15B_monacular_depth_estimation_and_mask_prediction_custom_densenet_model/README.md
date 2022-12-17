@@ -65,7 +65,7 @@ We concatinate both input fg + fgbg which will become 6 channels. Modal takes th
 The modal has 3 maxpools. After 3rd maxpool , image size will become W/8,H/8.
 
 I followed a specific channel output between each maxpool
-	![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/model_arch.png)
+	![image](https://github.com/gbrao018/eva4/blob/master/S15B_monacular_depth_estimation_and_mask_prediction_custom_densenet_model/logs/model_arch.png)
 
 	For, x15, I have concatenated the x12 maxpool also. 
 	x15 = self.x15(torch.cat([x12,x13,x14],dim=1)) # 512 channels. From here on we go on upscaling till 
@@ -234,7 +234,7 @@ So, with 32*32 size, I could able to try out all combinations of losses and thei
 In this case, choosen is is (32,32) but, I then interpolate the output to (64,64) size and sent to the loss function and backprop. With this approach, it was fast, but looks few spatial features compromised. We can see the roundedness of interpolation effect in masks. And brightness of the depth is also not that good. Tried to subtract the bright ness (-0.005) before sending to loss, but that actually is whitening the image , nothing more. 
 
 Interpolation effect (Observed roundedness with (32,32) input size and interpolated to (64,64):
-![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/interpolation-effect.jpg)
+![image](https://github.com/gbrao018/eva4/blob/master/S15B_monacular_depth_estimation_and_mask_prediction_custom_densenet_model/logs/interpolation-effect.jpg)
 
 		Conclusion: When we tried with small size, background quality is compromised, and rounded ness appeared due to interpolation. 
 		When the input size = size (minimum 64*64) used for loss calculation without interpolation, roundeness issue disappeared.
@@ -247,7 +247,7 @@ So tried with (64,64) as input size and the output as (64,64) but interpolate to
 	applied for whole dataset. But I still see the roundedness.
 
 #### No interpolation means, pixel perfect masks. (64,64) interpolated to (128,128). Increased depth clarity , but roundedness present still.
-![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/64_interpolate_128_7_2.jpg)
+![image](https://github.com/gbrao018/eva4/blob/master/S15B_monacular_depth_estimation_and_mask_prediction_custom_densenet_model/logs/64_interpolate_128_7_2.jpg)
 
 		Conclusion: When the input size is 64*64, interpolated to (128,128) for loss calculation , 
 		depth quality is good but roundedness still exist. Without interpolation we observed the mask came up accurately pixelwise.
@@ -258,11 +258,11 @@ When did with, (128,128) input size, and output (128,128) and NO MORE interpolat
 Initially, applied the same weights we got from initial (64,64) image on (128,128), and the results are good and improved without training.
 
 #### 3.3.1 Transfer learning worked: Applied weights from (64,64) to 128*128:
-![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/64weights_128_image.jpg)
+![image](https://github.com/gbrao018/eva4/blob/master/S15B_monacular_depth_estimation_and_mask_prediction_custom_densenet_model/logs/64weights_128_image.jpg)
 
 Now we trained the above weights on sample of 10000 images for 1 epoch. I checked the image quality, the background depth quality is clearly improved.
 
-![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/64weights_128_image_with1epoch_transfertraining.jpg)
+![image](https://github.com/gbrao018/eva4/blob/master/S15B_monacular_depth_estimation_and_mask_prediction_custom_densenet_model/logs/64weights_128_image_with1epoch_transfertraining.jpg)
 
 #### 3.3.2 Quality of depth maps depend on image size as well the no of samples trained. 
 
@@ -283,7 +283,7 @@ Now we trained the above weights on sample of 10000 images for 1 epoch. I checke
 With (128,128) size, now ran one more epoch on 30000 samples. Due to homogenity of either black or white, mask quickly shows 
 converges in its loss. But Depth across many images, every pixel has diffferent intensity.  Different learning rates of e-03,e-04,e-05 have been used. 
 
-![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/128_test_good.jpg)
+![image](https://github.com/gbrao018/eva4/blob/master/S15B_monacular_depth_estimation_and_mask_prediction_custom_densenet_model/logs/128_test_good.jpg)
 
 	Conclusion: Increased initial image size to (128,128). Depth maps are good. Mask always converges faster than depth. 
 
@@ -361,13 +361,13 @@ Mask is perfect almost.
 
 Random testing conducted on test samples. Below are the predicted images. We can observe few white marks. With more epochs of training, they can be gone.
 
-![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/final_12.png)
+![image](https://github.com/gbrao018/eva4/blob/master/S15B_monacular_depth_estimation_and_mask_prediction_custom_densenet_model/logs/final_12.png)
 
-![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/256_300k_epoch1_random2.png)
+![image](https://github.com/gbrao018/eva4/blob/master/S15B_monacular_depth_estimation_and_mask_prediction_custom_densenet_model/logs/256_300k_epoch1_random2.png)
 
-![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/256_300k_epoch1_random4.png)
+![image](https://github.com/gbrao018/eva4/blob/master/S15B_monacular_depth_estimation_and_mask_prediction_custom_densenet_model/logs/256_300k_epoch1_random4.png)
 
-![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/256_300k_epoch1_random5.png)
+![image](https://github.com/gbrao018/eva4/blob/master/S15B_monacular_depth_estimation_and_mask_prediction_custom_densenet_model/logs/256_300k_epoch1_random5.png)
 
 ### SECTION#4: Experiments with Losses and Analysis (Important, but might be boring to read)
 
@@ -463,7 +463,7 @@ I replaced the MSE for mask with BCE for mask. Loss = K(L2_depth + BCE_Mask)
 BCE is dancing according to MSE of mask. But seems for mask it does not matter wheather we use BCE or MSE, both are doing good.
 
 
-![image](https://github.com/gbrao018/eva4/blob/master/S15B/logs/256_300k_epoch1_random6.png)
+![image](https://github.com/gbrao018/eva4/blob/master/S15B_monacular_depth_estimation_and_mask_prediction_custom_densenet_model/logs/256_300k_epoch1_random6.png)
 
 ### SECTION#5: Custom Dataset class and index based strategy & Timeit of dataloading and loss calcualations.
 [MonocularDepth Dataset](https://github.com/gbrao018/eva4/blob/master/dataset/MonocularDepth_Dataset.py)
@@ -591,11 +591,11 @@ create on changes of ground truths.
 
 ##### Time taken for loading images : 0.07 s average
 
-[imageloadtime.link](https://raw.githubusercontent.com/gbrao018/eva4/master/S15B/logs/dataloader_timeit_1.txt)
+[imageloadtime.link](https://raw.githubusercontent.com/gbrao018/eva4/master/S15B_monacular_depth_estimation_and_mask_prediction_custom_densenet_model/logs/dataloader_timeit_1.txt)
 
 
 ##### Complete epoch(18749 batches) log with different losses & time taken:
-[timeit.link](https://raw.githubusercontent.com/gbrao018/eva4/master/S15B/logs/dataloader_timeit_256.log)
+[timeit.link](https://raw.githubusercontent.com/gbrao018/eva4/master/S15B_monacular_depth_estimation_and_mask_prediction_custom_densenet_model/logs/dataloader_timeit_256.log)
 
 	MSE Depth loss=0.007116 
 	MSE Mask Loss=0.001509 
